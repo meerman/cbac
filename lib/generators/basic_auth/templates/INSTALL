@@ -1,0 +1,50 @@
+== Installation
+
+Finished generating the basic user authentication system. There are still a few things you have to
+do manually. First open your application.rb and add
+
+  require_dependency "basic_auth"
+
+to the top of the file and include the login system by adding
+
+  include BasicAuth
+
+to the ApplicationController class.
+
+Your application.rb file should look something like this:
+
+	require_dependency "basic_auth"
+
+	class ApplicationController < ActionController::Base
+	  include BasicAuth
+	end
+
+Setup your database for your application and run rake migrate to create the user table. 
+
+	rake db:migrate
+	rake db:migrate RAILS_ENV=test
+	rake db:migrate RAILS_ENV=production
+	
+Configure your mail settings in environment.rb. E.g. for smtp you might add something like the following to environment.rb
+
+	ActionMailer::Base.delivery_method = :smtp
+	ActionMailer::Base.smpt_settings = {
+	  :address => "mail.mydomain.com",
+	  :port => 25,
+	  :domain => "mydomain.com",
+	  :user_name => "MyUsername",
+	  :password => "MyPassword",
+	  :authentication => :login
+	}
+
+Run the tests to check if everything is working ok
+
+	rake test
+	
+You can now protect actions by adding 
+
+	before_filter :login_required
+	
+to your controllers
+
+See http://www.aidanf.net/rails_user_authentication_tutorial for a description of the code.

@@ -1,0 +1,12 @@
+<% update_name = "gr__" + role.id.to_s + "__" + set_id.to_s %>
+<% unless update_partial %><div id="<%= update_name %>"><% end %>
+  <% remote_form_for "/cbac/permissions/update", :url => cbac_permissions_update_path,
+    :update => update_name, :before => "$('#{update_name}').style.visibility = 'hidden';",
+    :complete => "$('#{update_name}').style.visibility = 'visible';" do %>
+    <%= hidden_field_tag "generic_role_id" + update_name, role.id.to_s, :name => "generic_role_id" %>
+    <%= hidden_field_tag "privilege_set_id" + update_name, set_id.to_s, :name => "privilege_set_id" %>
+    <%= check_box_tag "permission" + update_name, "1",
+      (Cbac::Permission.find(:all, :conditions => ["generic_role_id = ? AND privilege_set_id = ?", role.id.to_s, set_id.to_s]).length > 0),
+      {:onclick => "this.form.onsubmit();", :name => "permission"}%>
+  <% end %>
+<% unless update_partial %></div><% end %>

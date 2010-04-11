@@ -1,0 +1,31 @@
+<div class="cbac">
+  <h1>Permissions</h1>
+  <table>
+    <tr>
+      <th>Privilegeset</th>
+      <% @context_roles.each do |name, comment| %>
+        <th><%= name %></th>
+      <% end %>
+      <% @generic_roles.each do |role| %>
+        <th><%= role.name %></th>
+      <% end %>
+    </tr>
+    <% PrivilegeSet.sets.each do |token, set| %>
+      <tr>
+        <td><%= set.name %></td>
+        <% @context_roles.each do |context_role, comment| %>
+          <td class="checked">
+            <%= render :partial => "cbac/permissions/update_context_role.html", :locals => {:context_role => context_role.to_s,
+              :set_id => set.id.to_s, :update_partial => false} %>
+          </td>
+        <% end %>
+        <% @generic_roles.each do |role| %>
+          <td class="checked">
+            <%= render :partial => "cbac/permissions/update_generic_role.html", :locals => {:role => role,
+              :set_id => set.id.to_s, :update_partial => false} %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+</div>

@@ -1,0 +1,16 @@
+<% form_for :user, :url=> {:action=> "login"} do |form| %>
+    <h3>Login</h3>  
+
+  	<label for="user_login">Login:</label><br/>
+  	<%= form.text_field "login", :size => 20 %><br/>
+
+  	<label for="user_password">Password:</label><br/>
+  	<%= form.password_field "password", :size => 20 %><br/>
+
+	<%= submit_tag "Submit" %>
+	
+    <%= link_to 'Register', :action => 'signup' %> |
+    <%= link_to 'Forgot my password', :action => 'forgot_password' %>      
+
+<% end %>
+

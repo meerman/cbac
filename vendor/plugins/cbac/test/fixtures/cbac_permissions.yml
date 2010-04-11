@@ -1,0 +1,15 @@
+###
+# Context 
+## YAML template for the permissions
+#role_id:   GenericRole.get_id :authorize_context_role
+
+# used by test_cbac_authorize_context_roles
+one:
+  context_role: authorize_context_role
+  privilege_set_id: 2
+
+# used by test_cbac_authorize_generic_roles
+two:
+  generic_role_id: 1
+  privilege_set_id: 3
+  

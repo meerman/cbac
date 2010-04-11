@@ -1,0 +1,65 @@
+/****
+* General 
+*/
+
+div.cbac h1 {
+
+}
+
+div.cbac table {
+    padding: 0px;
+    margin: 0px;
+    border-collapse: collapse;
+}
+
+div.cbac div.linebreak {
+    height: 20px;
+}
+
+/****
+* Table
+*/
+
+div.cbac th {
+    background-color: #ABEB71;
+}
+
+div.cbac td, div.cbac th {
+    border: 1px solid black;
+}
+
+div.cbac td.small, div.cbac th.small {
+    width: 50px;
+}
+
+div.cbac td.medium, div.cbac th.medium {
+    width: 150px;
+}
+
+div.cbac td.large, div.cbac th.large {
+    width: 600px;
+}
+
+div.cbac td.checked {
+    text-align: center;
+}
+
+div.cbac td.submit {
+    text-align: right;
+}
+
+/****
+* Controls
+*/
+
+div.cbac input[type="text"] {
+    margin: 2px;
+}
+
+div.cbac td.medium input[type="text"] {
+    width: 138px;
+}
+
+div.cbac td.large input[type="text"] {
+    width: 588px;
+}

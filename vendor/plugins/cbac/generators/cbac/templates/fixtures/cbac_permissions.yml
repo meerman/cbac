@@ -1,0 +1,8 @@
+###
+# Context 
+## YAML template for the permissions
+<% PrivilegeSet.sets.each do |set| %>
+fix_<%= set.id %>:
+    generic_role_id:  1
+    privilege_set_id: <%= set.id %>
+<% end %>

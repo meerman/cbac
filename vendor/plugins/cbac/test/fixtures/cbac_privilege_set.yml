@@ -1,0 +1,18 @@
+###
+# YAML template for the PrivilegeSets
+#
+
+# Privilegeset
+one:
+  id: 1
+  name: existing_privilege_set
+
+# Used by the test_cbac_authorize_context_roles
+two:
+  id: 2
+  name: cbac_context_role
+
+# Used by the test_cbac_authorize_generic_roles
+three:
+  id: 3
+  name: cbac_generic_role

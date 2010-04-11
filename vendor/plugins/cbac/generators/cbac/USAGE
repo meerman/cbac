@@ -1,0 +1,34 @@
+NAME
+     cbac - Generator scripts for the Context Based Access Control system
+
+SYNOPSIS
+     cbac
+     
+DESCRIPTION
+     This generator creates the basic setup for the CBAC system.
+
+     Included:
+      - config/privileges.rb
+      - config/context_roles.rb
+      - db/migrate/create_cbac.rb
+      - app/controllers/cbac/generic_roles_controller.rb
+      - app/controllers/cbac/memberships_controller.rb
+      - app/controllers/cbac/permissions_controller.rb
+      - app/views/layouts/cbac.html.erb
+      - app/views/cbac/generic_roles/index.html.erb
+      - app/views/cbac/memberships/index.html.erb
+      - app/views/cbac/memberships/_update.html.erb
+      - app/views/cbac/permissions/index.html.erb
+      - app/views/cbac/permissions/_update.html.erb
+      - public/stylesheets/cbac.css
+      - test/fixtures/cbac_permissions.yml
+      - test/fixtures/cbac_generic_roles.yml
+      - test/fixtures/cbac_memberships.yml
+
+            
+EXAMPLE
+      ./script/generate cbac
+
+MORE INFO
+	http://cbac.rubyforge.org/
+	

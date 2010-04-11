@@ -1,0 +1,8 @@
+###
+# Context 
+## YAML template for the memberships
+
+# Making the first user member of the administrator group
+one:
+    user_id: 1
+    generic_role_id: 1
