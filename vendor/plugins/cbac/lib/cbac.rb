@@ -37,6 +37,9 @@ module Cbac
         puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilegeset.name}" if Cbac::Config.verbose
         eval_string = ContextRole.roles[permission.context_role.to_sym]
         # Not sure if this will work everywhere
+        # TODO: sort this out
+        context[:session] = session
+        context["session"] = session
         return true if eval_string.call(context)
       end
       # not authorized

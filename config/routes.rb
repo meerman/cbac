@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :news
-  map.root :controller => "news"
-  map.login "/login", :controller => "news", :action => "login"
+  map.resources :news_items
+  map.root :controller => "news_items"
+  map.login "/login", :controller => "news_items", :action => "login"
   map.namespace(:cbac) do |cbac|
     cbac.permissions 'permissions', :controller => "permissions", :action => "index"
     cbac.permissions_update 'permissions/update', :controller => "permissions", :action => "update", :conditions => { :method => :post }

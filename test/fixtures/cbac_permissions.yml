@@ -5,29 +5,15 @@
 # Role: user
 <% PrivilegeSet.sets.each do |sym, set| %>
 fix_<%= set.id %>:
-    generic_role_id:  1
-    privilege_set_id: <%= set.id %>
+  generic_role_id:  1
+  privilege_set_id: <%= set.id %>
 <% end %>
-#one:
-#    generic_role_id:  1
-#    privilege_set_id: <%= PrivilegeSet.sets[:news_read].id %>
-#two:
-#    generic_role_id: 1
-#    privilege_set_id: <%= PrivilegeSet.sets[:news_create].id %>
-#three:
-#    generic_role_id: 1
-#    privilege_set_id: <%= PrivilegeSet.sets[:news_update].id %>
-#
+
 four:
-    context_role: everybody
-    privilege_set_id: <%= PrivilegeSet.sets[:news_read].id %>
+  context_role: everybody
+  privilege_set_id: <%= PrivilegeSet.sets[:news_item_read].id %>
 
 five:
-    context_role: everybody
-    privilege_set_id: <%= PrivilegeSet.sets[:login].id %>
+  context_role: everybody
+  privilege_set_id: <%= PrivilegeSet.sets[:login].id %>
 
-#six:
-#    generic_role_id: 1
-#    privilege_set_id: <%= PrivilegeSet.sets[:cbac_administration].id %>
-#
-#    

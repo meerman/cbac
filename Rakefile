@@ -7,4 +7,6 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'rubygems'
 require 'tasks/rails'
+require 'metric_fu'

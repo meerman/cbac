@@ -57,6 +57,7 @@ gems\:refresh_specs=Regenerate gem specifications in correct format.
 gems\:unpack=Unpacks all required gems into vendor/gems.
 gems\:unpack\:dependencies=Unpacks all required gems and their dependencies into vendor/gems.
 log\:clear=Truncates all *.log files in log/ to zero bytes
+metrics\:all=Generate all metrics reports
 middleware=Prints out your Rack middleware stack
 notes=Enumerate all annotations
 notes\:custom=Enumerate a custom annotation, specify with ANNOTATION=WTFHAX
@@ -78,14 +79,14 @@ routes=Print out all defined routes in match order, with names. Target specific 
 secret=Generate a crytographically secure secret key. This is typically used to generate a secret for cookie sessions.
 stats=Report code statistics (KLOCs, etc) from the application
 test=Run all unit, functional and integration tests
-test\:benchmark=Run tests for benchmarkdb:test:prepare / Benchmark the performance tests
-test\:functionals=Run tests for functionalsdb:test:prepare / Run the functional tests in test/functional
-test\:integration=Run tests for integrationdb:test:prepare / Run the integration tests in test/integration
-test\:plugins=Run tests for pluginsenvironment / Run the plugin tests in vendor/plugins/*/**/test (or specify with PLUGIN=name)
-test\:profile=Run tests for profiledb:test:prepare / Profile the performance tests
-test\:recent=Run tests for recentdb:test:prepare / Test recent changes
-test\:uncommitted=Run tests for uncommitteddb:test:prepare / Test changes since last checkin (only Subversion and Git)
-test\:units=Run tests for unitsdb:test:prepare / Run the unit tests in test/unit
+test\:benchmark=Run tests for {:benchmark=>"db:test:prepare"} / Benchmark the performance tests
+test\:functionals=Run tests for {:functionals=>"db:test:prepare"} / Run the functional tests in test/functional
+test\:integration=Run tests for {:integration=>"db:test:prepare"} / Run the integration tests in test/integration
+test\:plugins=Run tests for {:plugins=>:environment} / Run the plugin tests in vendor/plugins/*/**/test (or specify with PLUGIN=name)
+test\:profile=Run tests for {:profile=>"db:test:prepare"} / Profile the performance tests
+test\:recent=Run tests for {:recent=>"db:test:prepare"} / Test recent changes
+test\:uncommitted=Run tests for {:uncommitted=>"db:test:prepare"} / Test changes since last checkin (only Subversion and Git)
+test\:units=Run tests for {:units=>"db:test:prepare"} / Run the unit tests in test/unit
 time\:zones\:all=Displays names of all time zones recognized by the Rails TimeZone class, grouped by offset. Results can be filtered with optional OFFSET parameter, e.g., OFFSET=-6
 time\:zones\:local=Displays names of time zones recognized by the Rails TimeZone class with the same offset as the system local time
 time\:zones\:us=Displays names of US time zones recognized by the Rails TimeZone class, grouped by offset. Results can be filtered with optional OFFSET parameter, e.g., OFFSET=-6
