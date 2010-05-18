@@ -82,13 +82,13 @@ module Cbac
     # ### Initializer Include privileges file - contains the privilege and
     # privilege definitions
     begin
-      require File.join(RAILS_ROOT, "config", "privileges.rb")
+      require File.join(RAILS_ROOT, "config", "cbac", "privileges.rb")
     rescue MissingSourceFile
       puts "CBAC warning: Could not load config/privileges.rb (Did you run ./script/generate cbac)"
     end
     # Include context roles file - contains the context role definitions
     begin
-      require File.join(RAILS_ROOT, "config", "context_roles.rb")
+      require File.join(RAILS_ROOT, "config", "cbac", "context_roles.rb")
     rescue MissingSourceFile
       puts "CBAC warning: Could not load config/context_roles.rb (Did you run ./script/generate cbac)"
     end
