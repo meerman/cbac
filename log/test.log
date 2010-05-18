@@ -8684,3 +8684,503 @@ Processing NewsItemsController#update (for 0.0.0.0 at 2010-05-10 19:35:27) [PUT]
   [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '5' AND generic_role_id = 0) [0m
 Filter chain halted as [:authorize] rendered_or_redirected.
 Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/980190962?]
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('cbac_administration', '2010-05-10 17:37:19', '2010-05-10 17:37:19')[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0;1mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('login', '2010-05-10 17:37:19', '2010-05-10 17:37:19')[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (10.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('news_item_read', '2010-05-10 17:37:19', '2010-05-10 17:37:19')[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0;1mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('news_item_create', '2010-05-10 17:37:19', '2010-05-10 17:37:19')[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('news_item_update', '2010-05-10 17:37:19', '2010-05-10 17:37:19')[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+Unable to load cbac_generic_role, underlying cause no such file to load -- cbac_generic_role 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_helper_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_helper_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_membership, underlying cause no such file to load -- cbac_membership 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_helper_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_helper_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_permission, underlying cause no such file to load -- cbac_permission 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_helper_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_helper_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (10.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+Unable to load cbac_generic_role, underlying cause no such file to load -- cbac_generic_role 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_membership, underlying cause no such file to load -- cbac_membership 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_permission, underlying cause no such file to load -- cbac_permission 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM "news_items" [0m
+
+
+Processing NewsItemsController#create (for 0.0.0.0 at 2010-05-10 19:37:32) [POST]
+  Parameters: {"news_item"=>{}}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 1 AND privilege_set_id = 4) [0m
+  [4;36;1mNewsItem Create (10.0ms)[0m   [0;1mINSERT INTO "news_items" ("title", "body", "created_at", "updated_at") VALUES(NULL, NULL, '2010-05-10 17:37:32', '2010-05-10 17:37:32')[0m
+Redirected to http://test.host/news_items/980190963
+Completed in 20ms (DB: 30) | 302 Found [http://test.host/news_items?]
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM "news_items" [0m
+  [4;36;1mNewsItem Load (0.0ms)[0m   [0;1mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+
+
+Processing NewsItemsController#edit (for 0.0.0.0 at 2010-05-10 19:37:32) [GET]
+  Parameters: {"id"=>"980190962"}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 5) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '5' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/980190962/edit]
+
+
+Processing NewsItemsController#index (for 0.0.0.0 at 2010-05-10 19:37:32) [GET]
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 3) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '3' AND generic_role_id = 0) [0m
+  [4;35;1mNewsItem Load (0.0ms)[0m   [0mSELECT * FROM "news_items" [0m
+Rendering template within layouts/news_items
+Rendering news_items/index
+Completed in 80ms (View: 30, DB: 0) | 200 OK [http://test.host/news_items]
+
+
+Processing NewsItemsController#new (for 0.0.0.0 at 2010-05-10 19:37:32) [GET]
+  [4;36;1mCbac::GenericRole Load (0.0ms)[0m   [0;1mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 4) [0m
+  [4;35;1mCbac::Permission Load (0.0ms)[0m   [0mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '4' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/new]
+
+
+Processing NewsItemsController#login (for 0.0.0.0 at 2010-05-10 19:37:32) [POST]
+  Parameters: {"id"=>"1"}
+  [4;36;1mCbac::GenericRole Load (0.0ms)[0m   [0;1mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 2) [0m
+  [4;35;1mCbac::Permission Load (0.0ms)[0m   [0mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '2' AND generic_role_id = 0) [0m
+Redirected to http://test.host/news_items
+Completed in 10ms (DB: 0) | 302 Found [http://test.host/login?id=1]
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM "news_items" [0m
+
+
+Processing NewsItemsController#create (for 0.0.0.0 at 2010-05-10 19:37:32) [POST]
+  Parameters: {"news_item"=>{}}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 4) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '4' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items?]
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM "news_items" [0m
+  [4;36;1mNewsItem Load (0.0ms)[0m   [0;1mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+
+
+Processing NewsItemsController#show (for 0.0.0.0 at 2010-05-10 19:37:32) [GET]
+  Parameters: {"id"=>"980190962"}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 3) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '3' AND generic_role_id = 0) [0m
+  [4;35;1mNewsItem Load (0.0ms)[0m   [0mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+Rendering template within layouts/news_items
+Rendering news_items/show
+Completed in 0ms (View: 0, DB: 0) | 200 OK [http://test.host/news_items/980190962]
+  [4;36;1mNewsItem Load (0.0ms)[0m   [0;1mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+
+
+Processing NewsItemsController#update (for 0.0.0.0 at 2010-05-10 19:37:32) [PUT]
+  Parameters: {"news_item"=>{}, "id"=>"980190962"}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 5) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '5' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/980190962?]
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('cbac_administration', '2010-05-10 17:39:32', '2010-05-10 17:39:32')[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Create (10.0ms)[0m   [0;1mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('login', '2010-05-10 17:39:32', '2010-05-10 17:39:32')[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (10.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('news_item_read', '2010-05-10 17:39:32', '2010-05-10 17:39:32')[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Create (0.0ms)[0m   [0;1mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('news_item_create', '2010-05-10 17:39:32', '2010-05-10 17:39:32')[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Create (10.0ms)[0m   [0mINSERT INTO "cbac_privilege_set" ("name", "created_at", "updated_at") VALUES('news_item_update', '2010-05-10 17:39:32', '2010-05-10 17:39:32')[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+Unable to load cbac_generic_role, underlying cause no such file to load -- cbac_generic_role 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_items_helper_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_items_helper_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_membership, underlying cause no such file to load -- cbac_membership 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_items_helper_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_items_helper_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_permission, underlying cause no such file to load -- cbac_permission 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_items_helper_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/unit/helpers/news_items_helper_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mSQL (10.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'cbac_administration') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'login') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_read') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_create') LIMIT 1[0m
+  [4;36;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+  [4;35;1mCbac::PrivilegeSetRecord Load (0.0ms)[0m   [0mSELECT * FROM "cbac_privilege_set" WHERE (name = 'news_item_update') LIMIT 1[0m
+Unable to load cbac_generic_role, underlying cause no such file to load -- cbac_generic_role 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_membership, underlying cause no such file to load -- cbac_membership 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+Unable to load cbac_permission, underlying cause no such file to load -- cbac_permission 
+
+ c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:158:in `require'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:265:in `require_or_load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:224:in `depend_on'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activesupport-2.3.5/lib/active_support/dependencies.rb:136:in `require_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:853:in `try_to_load_dependency'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:868:in `block in require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+c:/ruby/lib/ruby/gems/1.9.1/gems/activerecord-2.3.5/lib/active_record/fixtures.rb:848:in `fixtures'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:35:in `<class:TestCase>'
+C:/Users/Bert/Documents/Projects/CBAC/test/test_helper.rb:5:in `<top (required)>'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `require'
+C:/Users/Bert/Documents/Projects/CBAC/test/functional/news_items_controller_test.rb:1:in `<top (required)>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `block in <main>'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+c:/ruby/lib/ruby/gems/1.9.1/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `<main>'
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM "news_items" [0m
+
+
+Processing NewsItemsController#create (for 0.0.0.0 at 2010-05-10 19:39:45) [POST]
+  Parameters: {"news_item"=>{}}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 1 AND privilege_set_id = 4) [0m
+  [4;36;1mNewsItem Create (10.0ms)[0m   [0;1mINSERT INTO "news_items" ("title", "body", "created_at", "updated_at") VALUES(NULL, NULL, '2010-05-10 17:39:45', '2010-05-10 17:39:45')[0m
+Redirected to http://test.host/news_items/980190963
+Completed in 20ms (DB: 20) | 302 Found [http://test.host/news_items?]
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM "news_items" [0m
+  [4;36;1mNewsItem Load (0.0ms)[0m   [0;1mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+
+
+Processing NewsItemsController#edit (for 0.0.0.0 at 2010-05-10 19:39:45) [GET]
+  Parameters: {"id"=>"980190962"}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 5) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '5' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/980190962/edit]
+
+
+Processing NewsItemsController#index (for 0.0.0.0 at 2010-05-10 19:39:45) [GET]
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 3) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '3' AND generic_role_id = 0) [0m
+  [4;35;1mNewsItem Load (0.0ms)[0m   [0mSELECT * FROM "news_items" [0m
+Rendering template within layouts/news_items
+Rendering news_items/index
+Completed in 50ms (View: 20, DB: 0) | 200 OK [http://test.host/news_items]
+
+
+Processing NewsItemsController#new (for 0.0.0.0 at 2010-05-10 19:39:45) [GET]
+  [4;36;1mCbac::GenericRole Load (0.0ms)[0m   [0;1mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 4) [0m
+  [4;35;1mCbac::Permission Load (0.0ms)[0m   [0mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '4' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/new]
+
+
+Processing NewsItemsController#login (for 0.0.0.0 at 2010-05-10 19:39:45) [POST]
+  Parameters: {"id"=>"1"}
+  [4;36;1mCbac::GenericRole Load (0.0ms)[0m   [0;1mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 2) [0m
+  [4;35;1mCbac::Permission Load (0.0ms)[0m   [0mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '2' AND generic_role_id = 0) [0m
+Redirected to http://test.host/news_items
+Completed in 0ms (DB: 0) | 302 Found [http://test.host/login?id=1]
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM "news_items" [0m
+
+
+Processing NewsItemsController#create (for 0.0.0.0 at 2010-05-10 19:39:45) [POST]
+  Parameters: {"news_item"=>{}}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 4) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '4' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items?]
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM "news_items" [0m
+  [4;36;1mNewsItem Load (0.0ms)[0m   [0;1mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+
+
+Processing NewsItemsController#show (for 0.0.0.0 at 2010-05-10 19:39:45) [GET]
+  Parameters: {"id"=>"980190962"}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 3) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '3' AND generic_role_id = 0) [0m
+  [4;35;1mNewsItem Load (0.0ms)[0m   [0mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+Rendering template within layouts/news_items
+Rendering news_items/show
+Completed in 0ms (View: 0, DB: 0) | 200 OK [http://test.host/news_items/980190962]
+  [4;36;1mNewsItem Load (0.0ms)[0m   [0;1mSELECT * FROM "news_items" WHERE ("news_items"."id" = 980190962) [0m
+
+
+Processing NewsItemsController#update (for 0.0.0.0 at 2010-05-10 19:39:45) [PUT]
+  Parameters: {"news_item"=>{}, "id"=>"980190962"}
+  [4;35;1mCbac::GenericRole Load (0.0ms)[0m   [0mSELECT "cbac_generic_roles".* FROM "cbac_generic_roles" INNER JOIN "cbac_memberships" ON cbac_memberships.generic_role_id = cbac_generic_roles.id INNER JOIN "cbac_permissions" ON cbac_permissions.generic_role_id = cbac_generic_roles.id WHERE (user_id= 0 AND privilege_set_id = 5) [0m
+  [4;36;1mCbac::Permission Load (0.0ms)[0m   [0;1mSELECT * FROM "cbac_permissions" WHERE (privilege_set_id = '5' AND generic_role_id = 0) [0m
+Filter chain halted as [:authorize] rendered_or_redirected.
+Completed in 0ms (View: 0, DB: 0) | 401 Unauthorized [http://test.host/news_items/980190962?]
