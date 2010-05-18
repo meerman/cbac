@@ -7,6 +7,14 @@ class Privilege
   class << self
     attr_reader :get_resources, :post_resources, :model_attributes, :models
 
+    # The includes hash contains references to inheritence. The key points to the
+    # base class, the value is an array of children.
+    #
+    # Example:
+    # If Child inherits from Parent, then the structure would be:
+    # includes[:Parent] = [:Child]
+    attr_reader :includes
+
     # Links a resource with a PrivilegeSet
     #
     # An ArgumentError exception is thrown if the PrivilegeSet does not exist.
@@ -22,11 +30,42 @@ class Privilege
       case action_option[0]
       when "GET"
         (@get_resources[method] ||= Array.new) << PrivilegeSet.sets[privilege_set]
+        (@includes[privilege_set] || Array.new).each {|child_set| (@get_resources[method] ||= Array.new) << PrivilegeSet.sets[child_set]} unless @includes.nil?
       when "POST"
         (@post_resources[method] ||= Array.new) << PrivilegeSet.sets[privilege_set]
+        (@includes[privilege_set] || Array.new).each {|child_set| (@post_resources[method] ||= Array.new) << PrivilegeSet.sets[child_set]} unless @includes.nil?
       else
+        raise "This should never happen"
       end
     end
+
+    # Make a privilege set dependant on other privilege set(s).
+    #
+    # Usage:
+    # Privilege.include :child_set, :base_set
+    # Privilege.include :child_set, [:base_set_1, :base_set_2]
+    #
+    # An ArgumentError exception is thrown if any of the PrivilegeSet methods do not exist.
+    def include(privilege_set, included_privilege_set)
+      @includes = Hash.new if @includes.nil?
+      child_set = privilege_set.to_sym
+      raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{child_set}" unless PrivilegeSet.sets.include?(child_set)
+      included_privilege_set = [included_privilege_set] unless included_privilege_set.is_a?(Enumerable)
+      included_privilege_set.each do |base_set|
+        # Check for existence of PrivilegeSet
+        raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{base_set}" unless PrivilegeSet.sets.include?(base_set)
+        # Adds the references
+        (@includes[base_set.to_sym] ||= Array.new) << child_set
+        # Copies existing resources
+        @get_resources.each do |method, privilege_sets|
+          resource child_set, method, :get if privilege_sets.any? {|set| set.name == base_set.to_s}
+        end
+        @post_resources.each do |method, privilege_sets|
+          resource child_set, method, :post if privilege_sets.any? {|set| set.name == base_set.to_s}
+        end
+      end
+    end
+      
 
     def model_attribute
 
@@ -38,6 +77,11 @@ class Privilege
     # Finds the privilege sets associated with the given controller_method and
     # action_type Valid values for action_type are "get", "post" and "put".
     # "put" is converted into "post".
+    #
+    # Usage:
+    # Privilege.select "my_controller/action", :get
+    #
+    # Returns an array of PrivilegeSet objects
     #
     # If incorrect values are given for action_type the method will raise an
     # ArgumentError. If the controller and action name are not found, an

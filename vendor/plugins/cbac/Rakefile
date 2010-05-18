@@ -29,7 +29,7 @@ Echoe.new('cbac', '0.3.2') do |p|
   p.description    = "Simple authorization system for Rails applications. Allows you to develop applications with a mixed role based authorization and a context based authorization model. Does not supply authentication."
   p.url            = "http://cbac.rubyforge.org"
   p.author         = "Bert Meerman"
-  p.email          = "b.meerman@ogd.nl"
+  p.email          = "bertm@rubyforge.org"
   p.ignore_pattern = []
   p.development_dependencies = []
 end
