@@ -18,26 +18,23 @@ class CbacAuthorizeContextRolesTest <  ActiveSupport::TestCase
   self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
   fixtures :all
   attr_accessor :authorize_context_eval_string
+  attr_accessor :session
 
   # Setup defines the PrivilegeSet that is being used by all PrivilegeTest methods
   def setup
     return if PrivilegeSet.sets.include?(:cbac_context_role)
     PrivilegeSet.add :cbac_context_role, ""
     Privilege.resource  :cbac_context_role, "authorize/context/roles", :get
-    ContextRole.add :authorize_context_role, "context.authorize_context_eval_string"
+    ContextRole.add :authorize_context_role, "context[:authorize_context_eval_string]"
   end
 
   # Check to see if action is correctly authorized
   def test_authorize_ok
-    self.authorize_context_eval_string = true
-    assert_equal true, authorization_check("authorize/context", "roles", :get, self)
+    assert_equal true, authorization_check("authorize/context", "roles", :get, {:authorize_context_eval_string => true})
   end
 
   # Run authorization with incorrect authorization
   def test_authorize_incorrect_privilege
-    self.authorize_context_eval_string = false
-#    ContextRole.roles[:authorize_context_role] = "false"
-    assert_equal false, authorization_check("authorize/context", "roles", :get, self)
-#    ContextRole.roles[:authorize_context_role] = "true"
+    assert_equal false, authorization_check("authorize/context", "roles", :get, {:authorize_context_eval_string => false})
   end
 end
