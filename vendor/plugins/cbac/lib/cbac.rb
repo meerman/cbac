@@ -30,7 +30,6 @@ module Cbac
 
     # Check the given privilege_sets
     def check_privilege_sets(privilege_sets, context = {})
-			puts "Checking privilege set!"
       # Check the generic roles
       return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user_id, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
       # Check the context roles Get the permissions
