@@ -37,7 +37,12 @@ module Cbac
         puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilegeset.name}" if Cbac::Config.verbose
         eval_string = ContextRole.roles[permission.context_role.to_sym]
         # Not sure if this will work everywhere
-        return true if eval_string.call(context)
+        begin
+          return true if eval_string.call(context)
+        rescue Exception => e
+          puts "Error in context role: #{permission.context_role} on privilege_set: #{permission.privilegeset.name}. Context: #{context}"
+          raise e if RAILS_ENV == "development" # In development mode, this should crash as hard as possible, but in further stages, it should not
+        end
       end
       # not authorized
       puts "Not authorized for: #{controller_method}" if Cbac::Config.verbose
