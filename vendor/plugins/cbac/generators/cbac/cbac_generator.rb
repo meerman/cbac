@@ -12,6 +12,9 @@ class CbacGenerator < Rails::Generator::Base
       # developer files
       m.file "config/privileges.rb", "config/privileges.rb", :collision => :skip
       m.file "config/context_roles.rb", "config/context_roles.rb", :collision => :skip
+			
+			# deployment file
+			m.file "config/cbac.pristine", "config/cbac.pristine", :collision => :skip
 
       # administration pages
       m.directory "app/controllers/cbac"
@@ -35,7 +38,8 @@ class CbacGenerator < Rails::Generator::Base
 
       # migrations
       m.migration_template "migrate/create_cbac.rb", "db/migrate", {:migration_file_name => "create_cbac"}
-
+      m.migration_template "migrate/create_cbac_known_permissions.rb", "db/migrate", {:migration_file_name => "create_cbac_known_permissions"}
+			m.migration_template "migrate/create_cbac_staged_change.rb", "db/migrate", {:migration_file_name => "create_cbac_staged_change"}
       # default fixtures
       m.file "fixtures/cbac_permissions.yml", "test/fixtures/cbac_permissions.yml"
       m.file "fixtures/cbac_generic_roles.yml", "test/fixtures/cbac_generic_roles.yml"

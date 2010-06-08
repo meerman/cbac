@@ -47,4 +47,5 @@ class CbacContextRoleTest <  ActiveSupport::TestCase
       ContextRole.add :test_adding_double_context_roles, ""
     end
   end
+  
 end
