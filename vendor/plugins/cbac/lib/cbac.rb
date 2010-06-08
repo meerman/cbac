@@ -30,8 +30,9 @@ module Cbac
 
     # Check the given privilege_sets
     def check_privilege_sets(privilege_sets, context = {})
+			puts "Checking privilege set!"
       # Check the generic roles
-      return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
+      return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user_id, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
       # Check the context roles Get the permissions
       privilege_sets.collect{|privilege_set|Cbac::Permission.find(:all, :conditions => ["privilege_set_id = ? AND generic_role_id = 0", privilege_set.id.to_s])}.flatten.each do |permission|
         puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilegeset.name}" if Cbac::Config.verbose
@@ -40,7 +41,12 @@ module Cbac
         # TODO: sort this out
         context[:session] = session
         context["session"] = session
-        return true if eval_string.call(context)
+        begin
+          return true if eval_string.call(context)
+        rescue Exception => e
+          puts "Error in context role: #{permission.context_role} on privilege_set: #{permission.privilegeset.name}. Context: #{context}"
+          raise e if RAILS_ENV == "development" # In development mode, this should crash as hard as possible, but in further stages, it should not
+        end
       end
       # not authorized
       puts "Not authorized for: #{controller_method}" if Cbac::Config.verbose
@@ -59,7 +65,7 @@ module Cbac
     end
 
     # Default implementation of the current_user method
-    def current_user
+    def current_user_id
       session[:currentuser].to_i
     end
 
