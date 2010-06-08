@@ -1,6 +1,6 @@
-class CreateNews < ActiveRecord::Migration
+class CreateNewsItems < ActiveRecord::Migration
   def self.up
-    create_table :news do |t|
+    create_table :news_items do |t|
       t.string :title
       t.text :body
 
@@ -9,6 +9,6 @@ class CreateNews < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :news
+    drop_table :news_items
   end
 end

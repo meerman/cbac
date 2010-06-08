@@ -37,6 +37,9 @@ module Cbac
         puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilegeset.name}" if Cbac::Config.verbose
         eval_string = ContextRole.roles[permission.context_role.to_sym]
         # Not sure if this will work everywhere
+        # TODO: sort this out
+        context[:session] = session
+        context["session"] = session
         return true if eval_string.call(context)
       end
       # not authorized
@@ -79,13 +82,13 @@ module Cbac
     # ### Initializer Include privileges file - contains the privilege and
     # privilege definitions
     begin
-      require File.join(RAILS_ROOT, "config", "privileges.rb")
+      require File.join(RAILS_ROOT, "config", "cbac", "privileges.rb")
     rescue MissingSourceFile
       puts "CBAC warning: Could not load config/privileges.rb (Did you run ./script/generate cbac)"
     end
     # Include context roles file - contains the context role definitions
     begin
-      require File.join(RAILS_ROOT, "config", "context_roles.rb")
+      require File.join(RAILS_ROOT, "config", "cbac", "context_roles.rb")
     rescue MissingSourceFile
       puts "CBAC warning: Could not load config/context_roles.rb (Did you run ./script/generate cbac)"
     end

@@ -10,8 +10,9 @@ class CbacGenerator < Rails::Generator::Base
   def manifest
     record do |m|
       # developer files
-      m.file "config/privileges.rb", "config/privileges.rb", :collision => :skip
-      m.file "config/context_roles.rb", "config/context_roles.rb", :collision => :skip
+      m.directory "config/cbac"
+      m.file "config/privileges.rb", "config/cbac/privileges.rb", :collision => :skip
+      m.file "config/context_roles.rb", "config/cbac/context_roles.rb", :collision => :skip
 
       # administration pages
       m.directory "app/controllers/cbac"
