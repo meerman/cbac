@@ -15,7 +15,7 @@ class CbacGenerator < Rails::Generator::Base
       m.file "config/context_roles.rb", "config/cbac/context_roles.rb", :collision => :skip
 			
 			# deployment file
-			m.file "config/cbac.pristine", "config/cbac.pristine", :collision => :skip
+			m.file "config/cbac.pristine", "config/cbac/cbac.pristine", :collision => :skip
 
       # administration pages
       m.directory "app/controllers/cbac"
