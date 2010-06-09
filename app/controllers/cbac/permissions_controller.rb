@@ -6,6 +6,7 @@ class Cbac::PermissionsController < ApplicationController
   def index
     @context_roles = ContextRole.roles.collect{|key, value| [key, value]}
     @generic_roles = Cbac::GenericRole.find(:all)
+    @sets = Cbac::PrivilegeSet.sets
   end
 
   def update
