@@ -4,7 +4,6 @@ Rakefile
 cbac.gemspec
 generators/cbac/USAGE
 generators/cbac/cbac_generator.rb
-generators/cbac/templates/config/cbac.pristine
 generators/cbac/templates/config/context_roles.rb
 generators/cbac/templates/config/privileges.rb
 generators/cbac/templates/controllers/generic_roles_controller.rb
@@ -14,8 +13,6 @@ generators/cbac/templates/fixtures/cbac_generic_roles.yml
 generators/cbac/templates/fixtures/cbac_memberships.yml
 generators/cbac/templates/fixtures/cbac_permissions.yml
 generators/cbac/templates/migrate/create_cbac.rb
-generators/cbac/templates/migrate/create_cbac_known_permissions.rb
-generators/cbac/templates/migrate/create_cbac_staged_change.rb
 generators/cbac/templates/stylesheets/cbac.css
 generators/cbac/templates/views/generic_roles/index.html.erb
 generators/cbac/templates/views/layouts/cbac.html.erb
@@ -29,14 +26,12 @@ lib/cbac.rb
 lib/cbac/config.rb
 lib/cbac/context_role.rb
 lib/cbac/generic_role.rb
-lib/cbac/known_permission.rb
 lib/cbac/membership.rb
 lib/cbac/permission.rb
 lib/cbac/privilege.rb
 lib/cbac/privilege_set.rb
 lib/cbac/privilege_set_record.rb
 lib/cbac/setup.rb
-lib/cbac/staged_change.rb
 tasks/cbac.rake
 test/fixtures/cbac_generic_roles.yml
 test/fixtures/cbac_memberships.yml

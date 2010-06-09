@@ -1,2 +1,0 @@
-0:+:PrivilegeSet(login) ContextRole(everybody)
-1:+:PrivilegeSet(cbac_administration) Admin()
