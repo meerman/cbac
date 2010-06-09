@@ -4,21 +4,26 @@ class Cbac::PermissionsController < ApplicationController
 
   # GET /index GET /index.xml
   def index
-    @context_roles = []
-    @generic_roles = []
-    @sets = []
+    if params[:role_substr] and params[:role_substr] != ""
+      @context_roles = []
+      @generic_roles = []
 
-    role_starts = params[:role_substr].nil? ? [""] : params[:role_substr].split('|')
-
-    role_starts.each do |role_start|
-      @context_roles += (ContextRole.roles.select {|key,value| !key.to_s.match(/^#{role_start}/).nil?}).collect{|key, value| [key, value]}
-      @generic_roles += Cbac::GenericRole.find(:all).select {|role| !role.name.match(/^#{role_start}/).nil? }
+      params[:role_substr].split('|').each do |role_start|
+          @context_roles += (ContextRole.roles.select {|key,value| !key.to_s.match(/^#{role_start}/).nil?}).collect{|key, value| [key, value]}
+        @generic_roles += Cbac::GenericRole.find(:all).select {|role| !role.name.match(/^#{role_start}/).nil? }
+      end
+    else
+      @context_roles = ContextRole.roles
+      @generic_roles = Cbac::GenericRole.all    
     end
 
-    priv_starts = params[:priv_substr].nil? ? [""] : params[:priv_substr].split('|')
-
-    priv_starts.each do |priv_start|
-      @sets += (PrivilegeSet.sets.select {|key, value| !key.to_s.match(/^#{priv_start}/).nil?}).uniq
+    if params[:priv_substr] && params[:priv_substr] != ""
+      @sets = []
+      params[:priv_substr].split('|').each do |priv_start|
+        @sets += PrivilegeSet.sets.select {|key, value| !key.to_s.match(/^#{priv_start}/).nil?}
+      end
+    else 
+      @sets = PrivilegeSet.sets
     end
   end
 
