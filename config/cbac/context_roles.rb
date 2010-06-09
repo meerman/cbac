@@ -5,8 +5,8 @@
 include Cbac
 
 # Defining context roles
-ContextRole.add :not_logged_in_user, 'session[:currentuser].to_i == 0'
-ContextRole.add :logged_in_user, 'session[:currentuser].to_i > 0'
+ContextRole.add :not_logged_in_user, 'context[:session][:currentuser].to_i == 0'
+ContextRole.add :logged_in_user, 'context[:session][:currentuser].to_i > 0'
 ContextRole.add :everybody, "true"
 ContextRole.add :news_owner do
   context[:post].user.id == current_user

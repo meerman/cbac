@@ -30,7 +30,6 @@ module Cbac
 
     # Check the given privilege_sets
     def check_privilege_sets(privilege_sets, context = {})
-			puts "Checking privilege set!"
       # Check the generic roles
       return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user_id, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
       # Check the context roles Get the permissions
@@ -38,6 +37,9 @@ module Cbac
         puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilegeset.name}" if Cbac::Config.verbose
         eval_string = ContextRole.roles[permission.context_role.to_sym]
         # Not sure if this will work everywhere
+        # TODO: sort this out
+        context[:session] = session
+        context["session"] = session
         begin
           return true if eval_string.call(context)
         rescue Exception => e
@@ -85,13 +87,13 @@ module Cbac
     # ### Initializer Include privileges file - contains the privilege and
     # privilege definitions
     begin
-      require File.join(RAILS_ROOT, "config", "privileges.rb")
+      require File.join(RAILS_ROOT, "config", "cbac", "privileges.rb")
     rescue MissingSourceFile
       puts "CBAC warning: Could not load config/privileges.rb (Did you run ./script/generate cbac)"
     end
     # Include context roles file - contains the context role definitions
     begin
-      require File.join(RAILS_ROOT, "config", "context_roles.rb")
+      require File.join(RAILS_ROOT, "config", "cbac", "context_roles.rb")
     rescue MissingSourceFile
       puts "CBAC warning: Could not load config/context_roles.rb (Did you run ./script/generate cbac)"
     end

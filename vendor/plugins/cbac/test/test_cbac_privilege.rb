@@ -9,6 +9,7 @@ class CbacPrivilegeTest <  ActiveSupport::TestCase
   # methods
   def setup
     PrivilegeSet.add :cbac_privilege, "" unless PrivilegeSet.sets.include?(:cbac_privilege)
+    PrivilegeSet.add :base_inheritence_privilege, "" unless PrivilegeSet.sets.include?(:base_inheritence_privilege)
   end
 
   # Test adding get and post resources It is possible to add a resource using
@@ -25,6 +26,59 @@ class CbacPrivilegeTest <  ActiveSupport::TestCase
       Privilege.resource :cbac_privilege, "add/resources/post/1", :POST
       Privilege.resource :cbac_privilege, "add/resources/post/2", :post
       Privilege.resource :cbac_privilege, "add/resources/post/3", :p
+    end
+  end
+
+  # Test the include method for single inheritence
+  def test_single_inheritence
+    Privilege.resource :base_inheritence_privilege, "single/inheritence"
+    Privilege.resource :base_inheritence_privilege, "single/inheritence/post", :post
+    PrivilegeSet.add :cbac_single_inheritence, "PrivilegeSet for single inheritence test"
+    Privilege.include :cbac_single_inheritence, :base_inheritence_privilege
+    result = Privilege.select("single/inheritence", :get)
+    assert_equal true, result.any? {|set| set.name == "base_inheritence_privilege"}, "Could not find PrivilegeSet (hint: error probably belongs to other test)"
+    assert_equal true, result.any? {|set| set.name == "cbac_single_inheritence"}, "Single inheritence failure"
+    result = Privilege.select("single/inheritence/post", :post)
+    assert_equal true, result.any? {|set| set.name == "cbac_single_inheritence"}, "Single inheritence failure with POST method"
+  end
+
+  # Test the include method for multiple inheritence
+  def test_multiple_inheritence
+    Privilege.resource :base_inheritence_privilege, "multiple/inheritence"
+    PrivilegeSet.add :base_multiple_inheritence, "parent/ base PrivilegeSet for multiple inheritence test"
+    PrivilegeSet.add :cbac_multiple_inheritence, "child PrivilegeSet for multiple inheritence test"
+    Privilege.resource :base_multiple_inheritence, "multiple/inheritence_again"
+    Privilege.include :cbac_multiple_inheritence, [:base_inheritence_privilege, :base_multiple_inheritence]
+    result = Privilege.select("multiple/inheritence", :get)
+    assert_equal true, result.any? {|set| set.name == "base_inheritence_privilege"}, "Could not find PrivilegeSet (hint: error probably belongs to other test)"
+    assert_equal true, result.any? {|set| set.name == "cbac_multiple_inheritence"}, "Multiple inheritence failure"
+    result = Privilege.select("multiple/inheritence_again", :get)
+    assert_equal true, result.any? {|set| set.name == "cbac_multiple_inheritence"}, "Multiple inheritence failure"
+  end
+
+  # Inheritence must be applied if a resource is added after an inheritence call
+  def test_inherit_resource_after_declaration
+    PrivilegeSet.add :cbac_inheritence_after_declaration, "PrivilegeSet for single inheritence test"
+    # First, we setup the inheritence relation
+    Privilege.include :cbac_inheritence_after_declaration, :base_inheritence_privilege
+    # Then, we setup the resource connection
+    Privilege.resource :base_inheritence_privilege, "inheritence/after/declaration"
+    Privilege.resource :base_inheritence_privilege, "inheritence/after/declaration/post", :post
+    # Test
+    result = Privilege.select("inheritence/after/declaration", :get)
+    assert_equal true, result.any?{|set| set.name == "base_inheritence_privilege"}, "Could not find PrivilegeSet (hint: error probably belongs to other test)"
+    assert_equal true, result.any?{|set| set.name == "cbac_inheritence_after_declaration"}, "Resource declaration after inheritence call failed"
+    result = Privilege.select("inheritence/after/declaration/post", :post)
+    assert_equal true, result.any?{|set| set.name == "cbac_inheritence_after_declaration"}, "Resource declaration after inheritence call failed with POST method"
+  end
+
+  # If the inheritence functionality is used with invalid privilege_sets, an ArgumentException must be thrown
+  def test_inheritence_with_invalid_privilege_sets
+    assert_raise(ArgumentError) do
+      Privilege.include :cbac_privilege, :invalid_privilege_set
+    end
+    assert_raise(ArgumentError) do
+      Privilege.include :invalid_privilege_set, :cbac_privilege
     end
   end
 
