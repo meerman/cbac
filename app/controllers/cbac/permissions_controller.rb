@@ -4,9 +4,27 @@ class Cbac::PermissionsController < ApplicationController
 
   # GET /index GET /index.xml
   def index
-    @context_roles = ContextRole.roles.collect{|key, value| [key, value]}
-    @generic_roles = Cbac::GenericRole.find(:all)
-    @sets = Cbac::PrivilegeSet.sets
+    if params[:role_substr] and params[:role_substr] != ""
+      @context_roles = []
+      @generic_roles = []
+
+      params[:role_substr].split('|').each do |role_start|
+          @context_roles += (ContextRole.roles.select {|key,value| !key.to_s.match(/^#{role_start}/).nil?}).collect{|key, value| [key, value]}
+        @generic_roles += Cbac::GenericRole.find(:all).select {|role| !role.name.match(/^#{role_start}/).nil? }
+      end
+    else
+      @context_roles = ContextRole.roles
+      @generic_roles = Cbac::GenericRole.all    
+    end
+
+    if params[:priv_substr] && params[:priv_substr] != ""
+      @sets = []
+      params[:priv_substr].split('|').each do |priv_start|
+        @sets += PrivilegeSet.sets.select {|key, value| !key.to_s.match(/^#{priv_start}/).nil?}
+      end
+    else 
+      @sets = PrivilegeSet.sets
+    end
   end
 
   def update

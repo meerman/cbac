@@ -1,4 +1,12 @@
 <div class="cbac">
+
+  <h2>Subset:</h2>
+  <form action="<%= request.request_uri %>" method="get" name="subset_view_form">
+    <b>Privilege set</b> starts with: <input type="text" name="priv_substr" value="<%= params[:priv_substr] %>" /><br />
+    <b>Role</b> starts with: <input type="text" name="role_substr" value="<%= params[:role_substr] %>" /><br/>
+    <input type="submit" value="Submit" />
+  </form>
+
   <h1>Permissions</h1>
   <table>
     <tr>
