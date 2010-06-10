@@ -9,9 +9,9 @@ PrivilegeSet.add :cbac_administration, "Allows administration of CBAC modules"
 
 # Defining privileges on controller methods (REST resources)
 Privilege.resource :cbac_administration, "cbac/permissions/index"
-Privilege.resource :cbac_administration, "cbac/permissions/update", :post
+Privilege.resource :cbac_administration, "cbac/permissions/create", :post
 Privilege.resource :cbac_administration, "cbac/memberships/index"
-Privilege.resource :cbac_administration, "cbac/memberships/update", :post
+Privilege.resource :cbac_administration, "cbac/memberships/create", :post
 Privilege.resource :cbac_administration, "cbac/generic_roles/index"
 Privilege.resource :cbac_administration, "cbac/generic_roles/update", :post
 Privilege.resource :cbac_administration, "cbac/generic_roles/create", :post
