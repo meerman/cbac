@@ -9,13 +9,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100201164735) do
+ActiveRecord::Schema.define(:version => 20100611123920) do
 
   create_table "cbac_generic_roles", :force => true do |t|
     t.string   "name"
     t.text     "remarks"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "cbac_known_permissions", :id => false, :force => true do |t|
+    t.integer "permission_number"
   end
 
   create_table "cbac_memberships", :force => true do |t|
@@ -35,6 +39,16 @@ ActiveRecord::Schema.define(:version => 20100201164735) do
 
   create_table "cbac_privilege_set", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cbac_staged_changes", :force => true do |t|
+    t.integer  "generic_role_id",               :default => 0
+    t.string   "context_role"
+    t.integer  "privilege_set_id"
+    t.integer  "change_number"
+    t.text     "action",           :limit => 2
     t.datetime "created_at"
     t.datetime "updated_at"
   end

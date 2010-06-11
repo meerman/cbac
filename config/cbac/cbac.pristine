@@ -1,0 +1,7 @@
+0:+:PrivilegeSet(login) ContextRole(everybody)
+1:+:PrivilegeSet(cbac_administration) Admin()
+2:+:PrivilegeSet(news_item_read) ContextRole(everybody)
+3:+:PrivilegeSet(news_item_update) ContextRole(news_owner)
+4:+:PrivilegeSet(news_item_create) ContextRole(logged_in_user)
+5:+:PrivilegeSet(news_item_moderator) ContextRole(logged_in_user)
+6:+:PrivilegeSet(news_item_administrator) Admin()

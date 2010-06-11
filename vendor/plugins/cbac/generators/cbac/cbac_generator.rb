@@ -15,7 +15,7 @@ class CbacGenerator < Rails::Generator::Base
       m.file "config/context_roles.rb", "config/cbac/context_roles.rb", :collision => :skip
 			
 			# deployment file
-			m.file "config/cbac.pristine", "config/cbac.pristine", :collision => :skip
+			m.file "config/cbac.pristine", "config/cbac/cbac.pristine", :collision => :skip
 
       # administration pages
       m.directory "app/controllers/cbac"
@@ -38,9 +38,15 @@ class CbacGenerator < Rails::Generator::Base
       m.file "stylesheets/cbac.css", "public/stylesheets/cbac.css"
 
       # migrations
-      m.migration_template "migrate/create_cbac.rb", "db/migrate", {:migration_file_name => "create_cbac"}
-      m.migration_template "migrate/create_cbac_known_permissions.rb", "db/migrate", {:migration_file_name => "create_cbac_known_permissions"}
-			m.migration_template "migrate/create_cbac_staged_change.rb", "db/migrate", {:migration_file_name => "create_cbac_staged_change"}
+      puts "type of m: " + m.class.name
+      if not Dir.glob("#{RAILS_ROOT}/db/migrate/[0-9]*_*.rb").grep(/[0-9]+_create_cbac.rb$/).empty?
+      #if m.migration_exists? "create_cbac"
+				# This is an upgrade from a previous version of CBAC
+				m.migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate", {:migration_file_name => "create_cbac_upgrade_path"}
+			else
+        # This is the first install of CBAC into the current project	
+				m.migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate", {:migration_file_name => "create_cbac_from_scratch"}
+      end
       # default fixtures
       m.file "fixtures/cbac_permissions.yml", "test/fixtures/cbac_permissions.yml"
       m.file "fixtures/cbac_generic_roles.yml", "test/fixtures/cbac_generic_roles.yml"
