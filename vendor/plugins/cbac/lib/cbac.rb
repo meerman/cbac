@@ -45,7 +45,7 @@ module Cbac
           return true if eval_string.call(context)
         rescue Exception => e
           puts "Error in context role: #{permission.context_role} on privilege_set: #{permission.privilegeset.name}. Context: #{context}"
-          raise e if RAILS_ENV == "development" # In development mode, this should crash as hard as possible, but in further stages, it should not
+          raise e if RAILS_ENV == "development" or RAILS_ENV == "test" # In development mode, this should crash as hard as possible, but in further stages, it should not
         end
       end
       # not authorized
