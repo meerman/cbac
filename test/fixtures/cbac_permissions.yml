@@ -1,19 +1,8 @@
 ###
 # Context 
 ## YAML template for the permissions
-
-# Role: user
-<% PrivilegeSet.sets.each do |sym, set| %>
+<% PrivilegeSet.sets.each do |set| %>
 fix_<%= set.id %>:
-  generic_role_id:  1
-  privilege_set_id: <%= set.id %>
+    generic_role_id:  1
+    privilege_set_id: <%= set.id %>
 <% end %>
-
-four:
-  context_role: everybody
-  privilege_set_id: <%= PrivilegeSet.sets[:news_item_read].id %>
-
-five:
-  context_role: everybody
-  privilege_set_id: <%= PrivilegeSet.sets[:login].id %>
-
