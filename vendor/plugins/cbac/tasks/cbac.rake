@@ -359,7 +359,7 @@ namespace :cbac do
     puts "\nFirst, bootstrapping CBAC"
     Rake::Task["cbac:bootstrap"].invoke
 
-    filename = ENV['PRISTINE_FILE'] || "config/cbac.pristine"
+    filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
     pristine_set = parse_pristine_file(filename)
     load_changes_into_database(pristine_set)
   end
