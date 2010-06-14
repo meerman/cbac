@@ -34,7 +34,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :cbac_known_permissions, :id => false do |t|
+    create_table :cbac_known_permissions do |t|
       t.integer :permission_number, :null => :no
       t.integer :permission_type, :default => 0
     end
