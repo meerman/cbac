@@ -1,12 +1,22 @@
 #TODO: add changes to pristine file to database, in "production" area 
-#TODO: StagedChanges also in clear_cbac_tables
+#TODO: generic_pristine
 
 #TODO: zip (or something) the directory resulting from a snapshot and delete it
 #TODO: unzip (or something) the provided snapshot and load from it, then delete temp dir
 #TODO: push as much as possible from this file to the core of CBAC, since reading pristine files from the front end will be required later on as well.
 #TODO: add staging area to extracted snapshot, inserted snapshot, clearing code, etc.
 
-#TODO: keep thinking: currently, non-changes are not saved as known_permissions when using pristine or such. This seems to be OK, but keep thinking about it.
+#TODO: add comments to pristine lines, in a Comment() style
+
+# WARNING: Non-changes are not saved as known_permissions when using pristine or such. THIS IS NOT A BUG! Think of the following scenario:
+# 1) Developers grant permission X
+# 2) User deploys. Permission X is granted in the database.
+# 3) User revokes permission X
+# 4) Developers revoke permission X
+# 5) User upgrades. No change in permission X detected, (since devteam and user agree) so the user is not prompted to accept the change.
+# 6) User grants permission X again
+# 7) User upgrades again. At this point, we want the user to be warned that the devteam thinks granting this permission is not a good idea. 
+#    This is only possible if the non-change in #5 is not registered as KnownChange
 
 # Get a privilege set that fulfills the provided conditions
 def get_privilege_set(conditions)
@@ -339,6 +349,33 @@ namespace :cbac do
 
   desc ''
   task :pristine => :environment do
+    if database_contains_cbac_data?
+      if ENV['FORCE'] == "true"
+        puts "FORCE specified: emptying CBAC tables"
+      else
+        puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+        exit
+      end
+    end
+
+    if ENV['SKIP_SNAPSHOT'] == 'true'
+      puts "\nSKIP_SNAPSHOT provided - not dumping database."
+    else
+      puts "\nDumping a snapshot of the database"
+      Rake::Task["cbac:extract_snapshot"].invoke
+    end
+    clear_cbac_tables
+
+    puts "\nFirst, bootstrapping CBAC"
+    Rake::Task["cbac:bootstrap"].invoke
+
+    filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
+    pristine_set = parse_pristine_file(filename)
+    load_changes_into_database(pristine_set)
+  end
+
+  desc ''
+  task :pristine_generic => :environment do
     if database_contains_cbac_data?
       if ENV['FORCE'] == "true"
         puts "FORCE specified: emptying CBAC tables"

@@ -40,7 +40,6 @@ class CbacGenerator < Rails::Generator::Base
       # migrations
       puts "type of m: " + m.class.name
       if not Dir.glob("#{RAILS_ROOT}/db/migrate/[0-9]*_*.rb").grep(/[0-9]+_create_cbac.rb$/).empty?
-      #if m.migration_exists? "create_cbac"
 				# This is an upgrade from a previous version of CBAC
 				m.migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate", {:migration_file_name => "create_cbac_upgrade_path"}
 			else
