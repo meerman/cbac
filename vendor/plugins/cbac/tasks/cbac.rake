@@ -389,7 +389,7 @@ namespace :cbac do
     #end
   end
 
-  desc ''
+  desc 'Restore permissions to factory settings by loading the pristine file into the database'
   task :pristine => :environment do
     ENV['CHANGE_TYPE'] = "context"
     if database_contains_cbac_data?
@@ -417,7 +417,7 @@ namespace :cbac do
     load_changes_into_database(pristine_set)
   end
 
-  desc ''
+  desc 'Restore generic permissions to factory settings'
   task :pristine_generic => :environment do
     ENV['CHANGE_TYPE'] = "generic"
     if database_contains_cbac_data?
@@ -448,5 +448,10 @@ namespace :cbac do
     Rake::Task["cbac:extract_snapshot"].invoke unless ENV['SKIP_SNAPSHOT'] == "true"
     # TODO: delegate reading files to separate function
     # TODO: delegate all new lines to load_changes
+    if ENV['INCLUDE_GENERIC']
+      puts "Also upgrading for Generic Roles"
+      ENV['CHANGE_TYPE'] = 'generic'     
+      # TODO: is_change?  for GenericRoles etc. Is this already done?
+    end
   end
 end
