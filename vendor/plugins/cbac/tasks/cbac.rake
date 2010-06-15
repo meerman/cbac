@@ -1,6 +1,3 @@
-#TODO: add changes to pristine file to database, in "production" area 
-#TODO: generic_pristine
-
 #TODO: zip (or something) the directory resulting from a snapshot and delete it
 #TODO: unzip (or something) the provided snapshot and load from it, then delete temp dir
 #TODO: push as much as possible from this file to the core of CBAC, since reading pristine files from the front end will be required later on as well.
@@ -74,6 +71,7 @@ def drop_generic_permissions
 end
 
 def clear_cbac_tables
+  puts "Clearing CBAC tables"
   Cbac::GenericRole.delete_all
   Cbac::Membership.delete_all
   Cbac::Permission.delete_all
@@ -239,10 +237,14 @@ end
 
 def permission_exists?(action)
   privilege_set = Cbac::PrivilegeSetRecord.first(:conditions => {:name => action[:operands][:privilege_set]})
-  if action[:operands][:role] == 'administrators'
-    return Cbac::Permission.exists?(:generic_role_id => Cbac::GenericRole.first(:conditions => {:name => "administrators"}).id, :privilege_set_id => privilege_set.id)
+  if ENV['CHANGE_TYPE'] == 'context'
+    if action[:operands][:role] == 'administrators'
+      return Cbac::Permission.exists?(:generic_role_id => Cbac::GenericRole.first(:conditions => {:name => "administrators"}).id, :privilege_set_id => privilege_set.id)
+    else 
+      return Cbac::Permission.exists?(:context_role => action[:operands][:role], :privilege_set_id => privilege_set.id)
+    end
   else 
-    return Cbac::Permission.exists?(:context_role => action[:operands][:role], :privilege_set_id => privilege_set.id)
+    return Cbac::Permission.exists?(:generic_role_id => Cbac::GenericRole.first(:conditions => {:name => action[:operands][:role]}).id, :privilege_set_id => privilege_set.id)
   end
 end
 
@@ -261,6 +263,11 @@ def is_change?(action)
 end
 
 def load_changes_into_staging_area(pristine_set)
+  changeset = pristine_set.select do |c| is_change?(c) end
+
+  changeset.each do |p| 
+    puts "Adding to staging area: #{p.inspect}"
+  end
   #TODO: load all changes into the staging area
 end
 
@@ -321,8 +328,13 @@ namespace :cbac do
     cbac_admin_permission = Cbac::Permission.new(:generic_role_id => admin_role.id, :privilege_set_id => admin_privilege_set_id)
     throw "Failed to save Cbac_Administration Permission" unless cbac_admin_permission.save
 
-    # TODO: is there an automatic wrapping method for strings?
-    puts "\n\n**********************************************************\n* Succesfully bootstrapped CBAC. The specified user (##{adminuser}) *\n* may now visit the cbac administration pages, which are *\n* located at the URL /cbac/permissions/index by default  *\n**********************************************************\n\n"
+    puts <<EOF
+**********************************************************
+* Succesfully bootstrapped CBAC. The specified user (##{adminuser}) *
+* may now visit the cbac administration pages, which are *
+* located at the URL /cbac/permissions/index by default  *
+**********************************************************
+EOF
   end
 
   desc 'Extract a snapshot of the current authorization settings, which can later be restored using the restore_snapshot task. Parameter SNAPSHOT_NAME determines where the snapshot is stored'
@@ -337,7 +349,7 @@ namespace :cbac do
       if ENV['FORCE'] == "true"
         puts "FORCE specified - overwriting older snapshot with same name."
       else
-        puts "A snapshot with the given name already exists, and overwriting is dangerous. Specify FORCE=true to override this check"
+        puts "A snapshot with the given name (#{ENV['SNAPSHOT_NAME']}) already exists, and overwriting is dangerous. Specify FORCE=true to override this check"
         exit
       end
     else # Directory does not exist yet
@@ -379,9 +391,12 @@ namespace :cbac do
     end
 
     puts "Restoring snapshot #{ENV['SNAPSHOT_NAME']}"
-    # delegate to db:fixtures:load
+    
     ENV['FIXTURES_PATH'] = ENV['SNAPSHOT_NAME']
-    ENV['FIXTURES'] = "cbac_generic_roles,cbac_memberships,cbac_known_permissions,cbac_permissions"
+    
+    # Don't need privilege sets since they are loaded from a config file.
+    ENV['FIXTURES'] = "cbac_generic_roles,cbac_memberships,cbac_known_permissions,cbac_permissions,cbac_staged_changes"
+    
     Rake::Task["db:fixtures:load"].invoke
     puts "Successfully restored snapshot."
     #TODO: check if rake task was successful. else
@@ -438,20 +453,33 @@ namespace :cbac do
       Rake::Task["cbac:extract_snapshot"].invoke
     end
 
-    filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
+    filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
     pristine_set = parse_pristine_file(filename)
     load_changes_into_database(pristine_set)
   end
 
   desc ''
   task :upgrade => :environment do
-    Rake::Task["cbac:extract_snapshot"].invoke unless ENV['SKIP_SNAPSHOT'] == "true"
-    # TODO: delegate reading files to separate function
-    # TODO: delegate all new lines to load_changes
-    if ENV['INCLUDE_GENERIC']
-      puts "Also upgrading for Generic Roles"
-      ENV['CHANGE_TYPE'] = 'generic'     
-      # TODO: is_change?  for GenericRoles etc. Is this already done?
+    if ENV['SKIP_SNAPSHOT'] == 'true'
+      puts "\nSKIP_SNAPSHOT provided - not dumping database."
+    else
+      puts "\nDumping a snapshot of the database"
+      Rake::Task["cbac:extract_snapshot"].invoke
+    end 
+   
+    ENV['CHANGE_TYPE'] = 'context'
+
+    filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
+    pristine_set = parse_pristine_file(filename)
+    load_changes_into_staging_area(pristine_set)
+  
+    if ENV['INCLUDE_GENERIC'] == 'true'
+      #puts "Also upgrading for Generic Roles"
+      #ENV['CHANGE_TYPE'] = 'generic'     
+
+      #filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
+      #pristine_set = parse_pristine_file(filename)
+      #load_changes_into_staging_area(pristine_set)
     end
   end
 end

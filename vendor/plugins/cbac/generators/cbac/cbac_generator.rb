@@ -7,6 +7,10 @@ class CbacGenerator < Rails::Generator::Base
     #raise "silently quiting"
   end
 
+  def migration_exists?(name)
+    not Dir.glob("#{RAILS_ROOT}/db/migrate/[0-9]*_*.rb").grep(/[0-9]+_#{name}.rb$/).empty?
+  end
+
   def manifest
     record do |m|
       # developer files
@@ -39,17 +43,21 @@ class CbacGenerator < Rails::Generator::Base
 
       # migrations
       puts "type of m: " + m.class.name
-      if not Dir.glob("#{RAILS_ROOT}/db/migrate/[0-9]*_*.rb").grep(/[0-9]+_create_cbac.rb$/).empty?
+      if migration_exists?("create_cbac") 
 				# This is an upgrade from a previous version of CBAC
-				m.migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate", {:migration_file_name => "create_cbac_upgrade_path"}
+				m.migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate", {:migration_file_name => "create_cbac_upgrade_path"} unless migration_exists?("create_cbac_upgrade_path")
 			else
         # This is the first install of CBAC into the current project	
-				m.migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate", {:migration_file_name => "create_cbac_from_scratch"}
+				m.migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate", {:migration_file_name => "create_cbac_from_scratch"} unless migration_exists?("create_cbac_from_scratch")
       end
       # default fixtures
       m.file "fixtures/cbac_permissions.yml", "test/fixtures/cbac_permissions.yml"
       m.file "fixtures/cbac_generic_roles.yml", "test/fixtures/cbac_generic_roles.yml"
       m.file "fixtures/cbac_memberships.yml", "test/fixtures/cbac_memberships.yml"
+
+      # Rake task
+      m.directory "lib/tasks" 
+      m.file "tasks/cbac.rake", "lib/tasks/cbac.rake"
     end
   end  
 end
