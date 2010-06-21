@@ -243,8 +243,9 @@ def permission_exists?(action)
     else 
       return Cbac::Permission.exists?(:context_role => action[:operands][:role], :privilege_set_id => privilege_set.id)
     end
-  else 
-    return Cbac::Permission.exists?(:generic_role_id => Cbac::GenericRole.first(:conditions => {:name => action[:operands][:role]}).id, :privilege_set_id => privilege_set.id)
+  else
+    cgr = Cbac::GenericRole.first(:conditions => {:name => action[:operands][:role]})
+    return (!cgr.nil? and Cbac::Permission.exists?(:generic_role_id => cgr.id, :privilege_set_id => privilege_set.id))
   end
 end
 
