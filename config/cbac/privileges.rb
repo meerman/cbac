@@ -22,6 +22,8 @@ Privilege.resource :cbac_administration, "cbac/generic_roles/create", :post
 Privilege.resource :cbac_administration, "cbac/generic_roles/delete", :post
 Privilege.resource :cbac_administration, "cbac/memberships/index"
 Privilege.resource :cbac_administration, "cbac/memberships/update", :post
+Privilege.resource :cbac_administration, "cbac/upgrade/index"
+Privilege.resource :cbac_administration, "cbac/upgrade/process_changes", :post
 Privilege.resource :login, "news_items/login", :POST
 Privilege.resource :news_item_read, "news_items/index"
 Privilege.resource :news_item_read, "news_items/show"

@@ -8,6 +8,8 @@ ActionController::Routing::Routes.draw do |map|
     cbac.resources :generic_roles
     cbac.memberships 'memberships', :controller => "memberships", :action => "index"
     cbac.memberships_update 'memberships/update', :controller => "memberships", :action => "update", :conditions => { :method => :post }
+    cbac.upgrade 'upgrade', :controller => 'upgrade', :action => "index"
+    cbac.process_changes 'upgrade/process_changes', :controller => 'upgrade', :action => 'process_changes', :conditions => { :method => :post }
   end
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
