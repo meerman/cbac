@@ -15,491 +15,344 @@
 # 7) User upgrades again. At this point, we want the user to be warned that the devteam thinks granting this permission is not a good idea. 
 #    This is only possible if the non-change in #5 is not registered as KnownChange
 
-# Get a privilege set that fulfills the provided conditions
-def get_privilege_set(conditions)
-  Cbac::PrivilegeSetRecord.first(:conditions => conditions)
+#require File.expand_path(File.join(File.dirname(__FILE__), '../../lib/cbac/cbac_pristine/pristine_file'))
+#require File.expand_path(File.join(File.dirname(__FILE__), '../../lib/cbac/cbac_pristine/pristine'))
+
+cbac_gem_dir = nil
+Dir["#{RAILS_ROOT}/vendor/gems/*"].each do |subdir|
+  cbac_gem_dir = subdir if subdir.gsub("#{RAILS_ROOT}/vendor/gems/", "") =~ /^(\w+-)?cbac-(\d+)/
 end
+cbac_plugin_dir = File.expand_path(File.dirname(__FILE__) + '/../../vendor/plugins/cbac')
+
+if cbac_gem_dir
+  $LOAD_PATH.unshift("#{cbac_gem_dir}/lib")
+elsif File.exist?(cbac_plugin_dir)
+  $LOAD_PATH.unshift("#{cbac_plugin_dir}/lib")
+end
+
+# Don't load rspec if running "rake gems:*"
+unless ARGV.any? { |a| a =~ /^gems/ }
+
+
+  require 'cbac/cbac_pristine/pristine'
+  require 'cbac/cbac_pristine/pristine_file'
+  require 'cbac/cbac_pristine/pristine_permission'
+
+  include Cbac::CbacPristine
+
+# Get a privilege set that fulfills the provided conditions
+  def get_privilege_set(conditions)
+    Cbac::PrivilegeSetRecord.first(:conditions => conditions)
+  end
 
 # Get a Hash containing all entries from the provided table
-def select_all(table)
-  ActiveRecord::Base.connection.select_all("SELECT * FROM %s;" % table)
-end
+  def select_all(table)
+    ActiveRecord::Base.connection.select_all("SELECT * FROM %s;" % table)
+  end
 
 # Generate a usable filename for dumping records of the specified type
-def get_filename(type)
-  "#{ENV['SNAPSHOT_NAME']}/cbac_#{type}.yml"
-end
+  def get_filename(type)
+    "#{ENV['SNAPSHOT_NAME']}/cbac_#{type}.yml"
+  end
 
-def load_objects_from_yaml(type)
-  filename = get_filename(type)
+  def load_objects_from_yaml(type)
+    filename = get_filename(type)
 
-  Yaml.load_file(filename)
-end
+    Yaml.load_file(filename)
+  end
 
 # Dump the specified permissions to a YAML file
-def dump_permissions_to_yaml_file(permissions)
-  permissions.each do |cp|
-    privilege_set_name = get_privilege_set(:id => cp['privilege_set_id']).name
-    cp['privilege_set_id'] = "<%= Cbac::PrivilegeSetRecord.find(:first, :conditions => {:name => '#{privilege_set_name}'}).id %>"
+  def dump_permissions_to_yaml_file(permissions)
+    permissions.each do |cp|
+      privilege_set_name = get_privilege_set(:id => cp['privilege_set_id']).name
+      cp['privilege_set_id'] = "<%= Cbac::PrivilegeSetRecord.find(:first, :conditions => {:name => '#{privilege_set_name}'}).id %>"
+    end
+    dump_objects_to_yaml_file(permissions, "permissions")
   end
-  dump_objects_to_yaml_file(permissions, "permissions")
-end
 
 # Dump a set of objects to a YAML file. Filename is determined by type-string
-def dump_objects_to_yaml_file(objects, type)
-  filename = get_filename(type)
+  def dump_objects_to_yaml_file(objects, type)
+    filename = get_filename(type)
 
-  puts "Writing #{type} to disk"
+    puts "Writing #{type} to disk"
 
-  File.open(filename, "w") do |output_file|
-    index = "0000"
-    output_file.write objects.inject({}) { |hash, record|
-      hash["#{type.singularize}_#{index.succ!}"] = record
-      hash
-    }.to_yaml
-  end
-end
-
-def drop_generic_known_permissions
-  known_permissions = Cbac::KnownPermission.find(:all, :conditions => {:permission_type => Cbac::KnownPermission.PERMISSION_TYPES[:generic]})
-  known_permissions.each {|p| p.destroy }
-end
-
-def drop_generic_permissions
-  permissions = Cbac::Permission.find(:all, :conditions => {:context_role => nil})
-  (permissions.select {|perm| perm.generic_role.name != "administrators" }).each {|p| p.destroy }
-end
-
-def clear_cbac_tables
-  puts "Clearing CBAC tables"
-  Cbac::GenericRole.delete_all
-  Cbac::Membership.delete_all
-  Cbac::Permission.delete_all
-  Cbac::KnownPermission.delete_all
-  Cbac::StagedChange.delete_all
-end
-
-def database_contains_cbac_data?
-  return (Cbac::GenericRole.count != 0 or Cbac::Membership.count != 0 or Cbac::Permission.count != 0 or Cbac::KnownPermission.count != 0 or Cbac::StagedChange.count != 0)
-end
-
-def handle_rename_privilegeset(old_set_name, new_set_name)
-  #TODO: not for this version yet
-end
-
-def handle_drop_privilegeset(old_set_name)
-  #TODO: not for this version yet
-end
-
-def register_change(change_number)
-  permission_type = Cbac::KnownPermission.PERMISSION_TYPES[ENV["CHANGE_TYPE"].to_sym]
-  new_known_permission = Cbac::KnownPermission.new(:permission_number => change_number, :permission_type => permission_type)
-  new_known_permission.save
-end
-
-def handle_grant_permission(change)
-  set_name = change[:operands][:privilege_set]
-  role = change[:operands][:role]
-  permission = Cbac::Permission.new
-  permission.privilege_set_id = get_privilege_set(:name => set_name).id
-  if ENV["CHANGE_TYPE"] == "generic"
-    begin
-      permission.generic_role_id = Cbac::GenericRole.first(:conditions => {:name => role}).id
-    rescue
-      puts "Generic Role #{role} does not exist yet, creating it first"
-      new_generic_role = Cbac::GenericRole.new(:name => role, :remarks => "Autogenerated by Cbac loading / upgrade system")
-      new_generic_role.save
-      permission.generic_role_id = new_generic_role.id
-    end
-  else
-    if role == "administrators"
-      permission.generic_role_id = Cbac::GenericRole.first(:conditions => {:name => "administrators"}).id
-    else
-      permission.context_role = role
+    File.open(filename, "w") do |output_file|
+      index = "0000"
+      output_file.write objects.inject({}) { |hash, record|
+        hash["#{type.singularize}_#{index.succ!}"] = record
+        hash
+      }.to_yaml
     end
   end
-  permission.save
-  register_change(change[:permission_number])
-end
 
-def handle_revoke_permission(change)
-  set_name = change[:operands][:privilege_set]
-  role = change[:operands][:role]
-  privilege_set_id = get_privilege_set(:name => set_name).id
-  if ENV["CHANGE_TYPE"] == "generic"
-    permission = Cbac::Permission.first(:conditions => {:privilege_set_id => privilege_set_id, :generic_role_id => Cbac::GenericRole.first(:conditions => {:name => role}).id})
-  else
-    if role == "administrators"
-      permission = Cbac::Permission.first(:conditions => {:privilege_set_id => privilege_set_id, :generic_role_id => Cbac::GenericRole.first(:conditions => {:name => "administrators"}).id})
-    else
-      permission = Cbac::Permission.first(:conditions => {:privilege_set_id => privilege_set_id, :context_role => role})
-    end
-  end
-  puts "set name: #{set_name} - role: #{role} - privilegeset id: #{privilege_set_id}"
-  permission.destroy
-  register_change(change[:permission_number])
-end
-
-def parse_role(operand_string)
-  if ENV['CHANGE_TYPE'] == "context"
-    match_data = operand_string.match( /^\s*Admin\(\)/ )
-    if match_data.nil? # this is not for the admin role
-      match_data_context_role = operand_string.match( /^\s*ContextRole\(\s*([A-Za-z0-9_]+)\s*\)/ )
-      if match_data_context_role.nil?
-        puts "Error: ContextRole expected, but found: \"#{operand_string}\". Exiting"
-        exit
-      else
-        return match_data_context_role.captures[0], match_data_context_role.post_match
-      end
-    else
-      return "administrators", match_data.post_match
-    end
-  elsif ENV['CHANGE_TYPE'] == "generic"
-    match_data_generic_role = operand_string.match( /^\s*GenericRole\(\s*([A-Za-z0-9_]+)\s*\)/ )
-    if match_data_generic_role.nil?
-      puts "Error: GenericRole expected, but found: \"#{operand_string}\". Exiting"
-      exit
-    else
-      return match_data_generic_role.captures[0], match_data_generic_role.post_match
-    end
-  end
-end
-
-def parse_privilege_set(operand_string)
-  match_data = operand_string.match( /^\s*PrivilegeSet\(\s*([A-Za-z0-9_]+)\s*\)\s*/ )
-  if match_data.nil?
-    puts "Error: PrivilegeSet expected, but found: \"#{operand_string}\". Exiting"
-    exit
-  else
-    return match_data.captures[0], match_data.post_match
-  end
-end
-
-def parse_operands(operation, operand_string)
-  operands = {}
-  case operation
-  when "+", "-"
-    operand, rest = parse_privilege_set(operand_string)
-    operands[:privilege_set] = operand
-    operand, rest = parse_role(rest)
-    operands[:role] = operand
-    #TODO: allow for comments here, and insert them into the operands - operands[:comment] = somethingorother
-    if !rest.match( /^\s*\Z/ )
-      puts "Error: garbage found after end of line. Exiting"
-      exit
-    else
-      return operands
-    end
-  when "x"
-    #TODO: add handling for this case
-    puts "Found removal operation, will parse only a privilege set"
-  when "=>"
-    #TODO: add handling for this case
-    puts "Found migration operation, will parse two privilegesets"
-  else
-    puts "Illegal operation encountered while parsing, exiting"
-    exit
-  end
-end
-
-def parse_pristine_file(filename)
-  # Reading file:
-  changes = []
-  File.open(filename, "r") do |f|
-    last_row_number = -1
-    f.each_with_index do |l, linenumber|
-      line = l.chomp
-      if (line =~ /^\s*(\d+)\s*:\s*([\+-x]|=>)\s*:(\s*[A-Za-z]+\(\s*[A-Za-z_]*\s*\))+\s*\Z/).nil?
-        unless res =~ /^\s*(#?|\s*$)/  # line is whitespace or comment line
-          puts "Error: garbage found in input file on line #{linenumber + 1}"
-          exit
-        end # line was non-empty and non-comment, so broken
-      else
-        header_match = line.match( /^(\d+):([\+-x]|=>):\s*/ )
-        row_number = header_match.captures[0].to_i
-        if row_number != last_row_number.succ
-          puts "Error: row numbers in pristine file do not increase monotonously. Exiting."
-          exit
+  namespace :cbac do
+    desc 'Initialize CBAC tables with bootstrap data. Allows ADMINUSER to log in and visit CBAC administration pages. Also, if a Privilege Set called "login" exists, this privilege is granted to "everyone"'
+    task :bootstrap => :environment do
+      if database_contains_cbac_data?
+        if ENV['FORCE'] == "true"
+          puts "FORCE specified: emptying CBAC tables"
+          clear_cbac_tables
         else
-          last_row_number = row_number
+          puts "CBAC bootstrap failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+          exit
         end
-        operation = header_match.captures[1]
-        operand_string = header_match.post_match
+      end
 
-        operands = parse_operands(operation, operand_string)
-        changes << {:permission_number => row_number, :type => operation, :operands => operands}
-      end # is line valid?
-    end # each line in file
-  end # File open block
+      adminuser = ENV['ADMINUSER'] || 1
+      login_privilege_set = get_privilege_set(:name => "login")
+      everybody_context_role = ContextRole.roles[:everybody]
+      if !login_privilege_set.nil? and !everybody_context_role.nil?
+        puts "Login privilege exists. Allowing context role 'everybody' to use login privilege"
+        login_permission = Cbac::Permission.new(:context_role => 'everybody', :privilege_set_id => login_privilege_set.id)
+        throw "Failed to save Login Permission" unless login_permission.save
+      end
 
-  changes
-end
+      puts "Creating Generic Role: administrators"
+      admin_role = Cbac::GenericRole.new(:name => "administrators", :remarks => "System administrators - may edit CBAC permissions")
+      throw "Failed to save new Generic Role" unless admin_role.save
 
-def permission_exists?(action)
-  privilege_set = Cbac::PrivilegeSetRecord.first(:conditions => {:name => action[:operands][:privilege_set]})
-  if ENV['CHANGE_TYPE'] == 'context'
-    if action[:operands][:role] == 'administrators'
-      return Cbac::Permission.exists?(:generic_role_id => Cbac::GenericRole.first(:conditions => {:name => "administrators"}).id, :privilege_set_id => privilege_set.id)
-    else 
-      return Cbac::Permission.exists?(:context_role => action[:operands][:role], :privilege_set_id => privilege_set.id)
-    end
-  else
-    cgr = Cbac::GenericRole.first(:conditions => {:name => action[:operands][:role]})
-    return (!cgr.nil? and Cbac::Permission.exists?(:generic_role_id => cgr.id, :privilege_set_id => privilege_set.id))
-  end
-end
+      puts "Creating Administrator Membership for user #{adminuser}"
+      membership = Cbac::Membership.new(:user_id => adminuser, :generic_role_id => admin_role.id)
+      throw "Failed to save new Administrator Membership" unless membership.save
 
-def is_change?(action)
-  #TODO return true if applying this action will change the database, false otherwise
-  case action[:type]
-  when "+"
-    return !permission_exists?(action)
-  when "-"
-    return permission_exists?(action)
-  when "x", "=>"
-    throw "Not yet implemented"
-  else
-    throw "Error: unknown action encountered while parsing: #{action[:type]}"
-  end
-end
-
-def load_changes_into_staging_area(pristine_set)
-  changeset = pristine_set.select do |c| is_change?(c) end
-
-  Cbac::StagedChange.delete_all
-
-  changeset.each do |c|
-    role = c[:operands][:role]  
-    priv_set_id = Cbac::PrivilegeSetRecord.first(:conditions => {:name => c[:operands][:privilege_set]})
-    csc = Cbac::StagedChange.new(:change_number => c[:permission_number], :privilege_set_id => priv_set_id, :comment => c[:comment], :action => c[:type])
-    
-    if ENV['CHANGE_TYPE'] == 'context' and role != 'administrators'
-      #create new thingy with administrators role
-      csc.context_role = role
-    else
       begin
-        csc.generic_role_id = Cbac::GenericRole.first(:conditions => {:name => role}).id
+        admin_privilege_set_id = get_privilege_set({:name => 'cbac_administration'}).id
       rescue
-        puts "Generic Role #{role} does not exist yet, creating it first"
-        new_generic_role = Cbac::GenericRole.new(:name => role, :remarks => "Autogenerated by Cbac loading / upgrade system")
-        new_generic_role.save
-        csc.generic_role_id = new_generic_role.id
+        throw "No PrivilegeSet cbac_administration defined. Aborting."
       end
-    end 
-      
-    csc.save
-  end
-end
+      cbac_admin_permission = Cbac::Permission.new(:generic_role_id => admin_role.id, :privilege_set_id => admin_privilege_set_id)
+      throw "Failed to save Cbac_Administration Permission" unless cbac_admin_permission.save
 
-def load_changes_into_database(pristine_set)
-  puts "Calculating changes"
-  changeset = pristine_set.select do |c| is_change?(c) end
-  puts "Adding changes to database"
-  changeset.each do |c|
-    case c[:type]
-    when "+"
-      handle_grant_permission(c)
-    when "-"
-      handle_revoke_permission(c)
-    when "=>"
-      handle_rename_privilegeset(c)
-    when "x"
-      handle_drop_privilegeset(c)
-    end
-  end
-  puts "Successfully loaded #{changeset.size} changes into database" if changeset.size != 0
-end
-
-namespace :cbac do
-  desc 'Initialize CBAC tables with bootstrap data. Allows ADMINUSER to log in and visit CBAC administration pages. Also, if a Privilege Set called "login" exists, this privilege is granted to "everyone"'
-  task :bootstrap => :environment do
-    if database_contains_cbac_data?
-      if ENV['FORCE'] == "true"
-        puts "FORCE specified: emptying CBAC tables"
-        clear_cbac_tables
-      else
-        puts "CBAC bootstrap failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
-        exit
-      end
-    end
-
-    adminuser = ENV['ADMINUSER'] || 1
-    login_privilege_set = get_privilege_set(:name => "login")
-    everybody_context_role = ContextRole.roles[:everybody]
-    if !login_privilege_set.nil? and !everybody_context_role.nil?
-      puts "Login privilege exists. Allowing context role 'everybody' to use login privilege"
-      login_permission = Cbac::Permission.new(:context_role => 'everybody', :privilege_set_id => login_privilege_set.id)
-      throw "Failed to save Login Permission" unless login_permission.save
-    end
-
-    puts "Creating Generic Role: administrators"
-    admin_role = Cbac::GenericRole.new(:name => "administrators", :remarks => "System administrators - may edit CBAC permissions")
-    throw "Failed to save new Generic Role" unless admin_role.save
-
-    puts "Creating Administrator Membership for user #{adminuser}"
-    membership = Cbac::Membership.new(:user_id => adminuser, :generic_role_id => admin_role.id)
-    throw "Failed to save new Administrator Membership" unless membership.save
-
-    begin
-      admin_privilege_set_id = get_privilege_set({:name => 'cbac_administration'}).id
-    rescue
-      throw "No PrivilegeSet cbac_administration defined. Aborting."
-    end
-    cbac_admin_permission = Cbac::Permission.new(:generic_role_id => admin_role.id, :privilege_set_id => admin_privilege_set_id)
-    throw "Failed to save Cbac_Administration Permission" unless cbac_admin_permission.save
-
-    puts <<EOF
+      puts <<EOF
 **********************************************************
-* Succesfully bootstrapped CBAC. The specified user (##{adminuser}) *
+* Succesfully bootstrapped CBAC. The specified user (# #{adminuser} ) *
 * may now visit the cbac administration pages, which are *
 * located at the URL /cbac/permissions/index by default  *
 **********************************************************
 EOF
-  end
-
-  desc 'Extract a snapshot of the current authorization settings, which can later be restored using the restore_snapshot task. Parameter SNAPSHOT_NAME determines where the snapshot is stored'
-  task :extract_snapshot => :environment do
-    if ENV['SNAPSHOT_NAME'].nil?
-      puts "Missing argument SNAPSHOT_NAME. Substituting timestamp for SNAPSHOT_NAME"
-      require 'date'
-      ENV['SNAPSHOT_NAME'] = DateTime.now.strftime("%Y%m%d%H%M%S")
     end
 
-    if File::exists?(ENV['SNAPSHOT_NAME']) # Directory already exists!
-      if ENV['FORCE'] == "true"
-        puts "FORCE specified - overwriting older snapshot with same name."
-      else
-        puts "A snapshot with the given name (#{ENV['SNAPSHOT_NAME']}) already exists, and overwriting is dangerous. Specify FORCE=true to override this check"
-        exit
+    desc 'Extract a snapshot of the current authorization settings, which can later be restored using the restore_snapshot task. Parameter SNAPSHOT_NAME determines where the snapshot is stored'
+    task :extract_snapshot => :environment do
+      if ENV['SNAPSHOT_NAME'].nil?
+        puts "Missing argument SNAPSHOT_NAME. Substituting timestamp for SNAPSHOT_NAME"
+        require 'date'
+        ENV['SNAPSHOT_NAME'] = DateTime.now.strftime("%Y%m%d%H%M%S")
       end
-    else # Directory does not exist yet
-      FileUtils.mkdir(ENV['SNAPSHOT_NAME'])
-    end
 
-    puts "Extracting CBAC permissions to #{ENV['SNAPSHOT_NAME']}"
-
-    # Don't need privilege sets since they are loaded from a config file.
-    staged_changes = select_all "cbac_staged_changes"
-    dump_objects_to_yaml_file(staged_changes, "staged_changes")
-
-    permissions = select_all "cbac_permissions"
-    dump_permissions_to_yaml_file(permissions)
-
-    generic_roles = select_all "cbac_generic_roles"
-    dump_objects_to_yaml_file(generic_roles, "generic_roles")
-
-    memberships = select_all "cbac_memberships"
-    dump_objects_to_yaml_file(memberships, "memberships")
-
-    known_permissions = select_all "cbac_known_permissions"
-    dump_objects_to_yaml_file(known_permissions, "known_permissions")
-  end
-
-  desc 'Restore a snapshot of authorization settings that was extracted earlier. Specify a snapshot using SNAPSHOT_NAME'
-  task :restore_snapshot => :environment do
-    if ENV['SNAPSHOT_NAME'].nil?
-      puts "Missing required parameter SNAPSHOT_NAME. Exiting."
-      exit
-    elsif database_contains_cbac_data?
-      if ENV['FORCE'] == "true"
-        puts "FORCE specified: emptying CBAC tables"
-        clear_cbac_tables
-      else
-        puts "Reloading snapshot failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
-        exit
+      if File::exists?(ENV['SNAPSHOT_NAME']) # Directory already exists!
+        if ENV['FORCE'] == "true"
+          puts "FORCE specified - overwriting older snapshot with same name."
+        else
+          puts "A snapshot with the given name (#{ENV['SNAPSHOT_NAME']}) already exists, and overwriting is dangerous. Specify FORCE=true to override this check"
+          exit
+        end
+      else # Directory does not exist yet
+        FileUtils.mkdir(ENV['SNAPSHOT_NAME'])
       end
+
+      puts "Extracting CBAC permissions to #{ENV['SNAPSHOT_NAME']}"
+
+      # Don't need privilege sets since they are loaded from a config file.
+      staged_changes = select_all "cbac_staged_permissions"
+      dump_objects_to_yaml_file(staged_changes, "staged_permissions")
+
+      staged_roles = select_all "cbac_staged_roles"
+      dump_objects_to_yaml_file(staged_roles, "staged_roles")
+
+      permissions = select_all "cbac_permissions"
+      dump_permissions_to_yaml_file(permissions)
+
+      generic_roles = select_all "cbac_generic_roles"
+      dump_objects_to_yaml_file(generic_roles, "generic_roles")
+
+      memberships = select_all "cbac_memberships"
+      dump_objects_to_yaml_file(memberships, "memberships")
+
+      known_permissions = select_all "cbac_known_permissions"
+      dump_objects_to_yaml_file(known_permissions, "known_permissions")
     end
 
-    puts "Restoring snapshot #{ENV['SNAPSHOT_NAME']}"
-    
-    ENV['FIXTURES_PATH'] = ENV['SNAPSHOT_NAME']
-    
-    # Don't need privilege sets since they are loaded from a config file.
-    ENV['FIXTURES'] = "cbac_generic_roles,cbac_memberships,cbac_known_permissions,cbac_permissions,cbac_staged_changes"
-    
-    Rake::Task["db:fixtures:load"].invoke
-    puts "Successfully restored snapshot."
-    #TODO: check if rake task was successful. else
-    #  puts "Restoring snapshot failed."
-    #end
-  end
-
-  desc 'Restore permissions to factory settings by loading the pristine file into the database'
-  task :pristine => :environment do
-    ENV['CHANGE_TYPE'] = "context"
-    if database_contains_cbac_data?
-      if ENV['FORCE'] == "true"
-        puts "FORCE specified: emptying CBAC tables"
-      else
-        puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+    desc 'Restore a snapshot of authorization settings that was extracted earlier. Specify a snapshot using SNAPSHOT_NAME'
+    task :restore_snapshot => :environment do
+      if ENV['SNAPSHOT_NAME'].nil?
+        puts "Missing required parameter SNAPSHOT_NAME. Exiting."
         exit
+      elsif database_contains_cbac_data?
+        if ENV['FORCE'] == "true"
+          puts "FORCE specified: emptying CBAC tables"
+          clear_cbac_tables
+        else
+          puts "Reloading snapshot failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+          exit
+        end
       end
+
+      puts "Restoring snapshot #{ENV['SNAPSHOT_NAME']}"
+
+      ENV['FIXTURES_PATH'] = ENV['SNAPSHOT_NAME']
+
+      # Don't need privilege sets since they are loaded from a config file.
+      ENV['FIXTURES'] = "cbac_generic_roles,cbac_memberships,cbac_known_permissions,cbac_permissions,cbac_staged_permissions, cbac_staged_roles"
+
+      Rake::Task["db:fixtures:load"].invoke
+      puts "Successfully restored snapshot."
+      #TODO: check if rake task was successful. else
+      #  puts "Restoring snapshot failed."
+      #end
     end
 
-    if ENV['SKIP_SNAPSHOT'] == 'true'
-      puts "\nSKIP_SNAPSHOT provided - not dumping database."
-    else
-      puts "\nDumping a snapshot of the database"
-      Rake::Task["cbac:extract_snapshot"].invoke
-    end
-    clear_cbac_tables
+    desc 'Restore permissions to factory settings by loading the pristine file into the database'
+    task :pristine => :environment do
+      if database_contains_cbac_data?
+        if ENV['FORCE'] == "true"
+          puts "FORCE specified: emptying CBAC tables"
+        else
+          puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+          exit
+        end
+      end
 
-    puts "\nFirst, bootstrapping CBAC"
-    Rake::Task["cbac:bootstrap"].invoke
-
-    filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
-    pristine_set = parse_pristine_file(filename)
-    load_changes_into_database(pristine_set)
-  end
-
-  desc 'Restore generic permissions to factory settings'
-  task :pristine_generic => :environment do
-    ENV['CHANGE_TYPE'] = "generic"
-    if database_contains_cbac_data?
-      if ENV['FORCE'] == "true"
-        puts "FORCE specified. Dropping all generic permissions and replacing them with generic pristine"
-        drop_generic_known_permissions
-        drop_generic_permissions
+      if ENV['SKIP_SNAPSHOT'] == 'true'
+        puts "\nSKIP_SNAPSHOT provided - not dumping database."
       else
-        puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
-        exit
+        puts "\nDumping a snapshot of the database"
+        Rake::Task["cbac:extract_snapshot"].invoke
       end
+      filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
+      puts "Parsing pristine file #{filename}"
+      pristine_file = PristineFile.new(filename)
+      set_pristine_state([pristine_file], true)
+      puts "Applied #{pristine_file.permissions.length.to_s} permissions."
+      puts "Task cbac:pristine finished."
     end
 
-    if ENV['SKIP_SNAPSHOT'] == 'true'
-      puts "\nSKIP_SNAPSHOT provided - not dumping database."
-    else
-      puts "\nDumping a snapshot of the database"
-      Rake::Task["cbac:extract_snapshot"].invoke
+    desc 'Restore generic permissions to factory settings'
+    task :pristine_generic => :environment do
+      if database_contains_cbac_data?
+        if ENV['FORCE'] == "true"
+          puts "FORCE specified. Dropping all generic permissions and replacing them with generic pristine"
+          drop_generic_known_permissions
+          drop_generic_permissions
+        else
+          puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+          exit
+        end
+      end
+
+      if ENV['SKIP_SNAPSHOT'] == 'true'
+        puts "\nSKIP_SNAPSHOT provided - not dumping database."
+      else
+        puts "\nDumping a snapshot of the database"
+        Rake::Task["cbac:extract_snapshot"].invoke
+      end
+
+      filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
+      puts "Parsing pristine file #{filename}"
+      pristine_file = GenericPristineFile.new(filename)
+      set_pristine_state([pristine_file], false)
+      puts "Applied #{pristine_file.permissions.length.to_s} permissions."
+      puts "Task cbac:pristine_generic finished."
     end
 
-    filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
-    pristine_set = parse_pristine_file(filename)
-    load_changes_into_database(pristine_set)
-  end
+    desc 'Restore all permissions to factory state. Uses the pristine file and the generic pristine file'
+    task :pristine_all => :environment do
+      if database_contains_cbac_data?
+        if ENV['FORCE'] == "true"
+          puts "FORCE specified: emptying CBAC tables"
+        else
+          puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
+          exit
+        end
+      end
 
-  desc ''
-  task :upgrade => :environment do
-    if ENV['SKIP_SNAPSHOT'] == 'true'
-      puts "\nSKIP_SNAPSHOT provided - not dumping database."
-    else
-      puts "\nDumping a snapshot of the database"
-      Rake::Task["cbac:extract_snapshot"].invoke
-    end 
-   
-    ENV['CHANGE_TYPE'] = 'context'
+      if ENV['SKIP_SNAPSHOT'] == 'true'
+        puts "\nSKIP_SNAPSHOT provided - not dumping database."
+      else
+        puts "\nDumping a snapshot of the database"
+        Rake::Task["cbac:extract_snapshot"].invoke
+      end
+      filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
+      generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
+      puts "Parsing pristine file #{filename} and generic pristine file #{generic_filename}"
+      pristine_file = PristineFile.new(filename)
+      generic_pristine_file = GenericPristineFile.new(generic_filename)
+      set_pristine_state([pristine_file, generic_pristine_file], true)
+      puts "Applied #{pristine_file.permissions.length.to_s} permissions and #{generic_pristine_file.permissions.length.to_s} generic permissions."
+      puts "Task cbac:pristine_all finished."
+    end
 
-    filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
-    pristine_set = parse_pristine_file(filename)
-    load_changes_into_staging_area(pristine_set)
-  
-    if ENV['INCLUDE_GENERIC'] == 'true'
-      #puts "Also upgrading for Generic Roles"
-      #ENV['CHANGE_TYPE'] = 'generic'     
+    desc 'Upgrade permissions by adding them to the staging area. Does not upgrade generic permissions'
+    task :upgrade_pristine => :environment do
+      if ENV['SKIP_SNAPSHOT'] == 'true'
+        puts "\nSKIP_SNAPSHOT provided - not dumping database."
+      else
+        puts "\nDumping a snapshot of the database"
+        Rake::Task["cbac:extract_snapshot"].invoke
+      end
 
-      #filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
-      #pristine_set = parse_pristine_file(filename)
-      #load_changes_into_staging_area(pristine_set)
+      ENV['CHANGE_TYPE'] = 'context'
+      filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
+      puts "Parsing pristine file #{filename}"
+
+      pristine_file = PristineFile.new(filename)
+      PristinePermission.delete_non_generic_permissions
+      puts "Deleted all staged context and administrator permissions"
+
+      stage_permissions([pristine_file])
+      puts "Staged #{pristine_file.permissions.length.to_s} permissions."
+      puts "Task cbac:upgrade_pristine finished."
+    end
+
+
+    desc 'Upgrade generic permissions by adding them to the staging area. Does not upgrade context or admin permissions.'
+    task :upgrade_pristine_generic => :environment do
+      if ENV['SKIP_SNAPSHOT'] == 'true'
+        puts "\nSKIP_SNAPSHOT provided - not dumping database."
+      else
+        puts "\nDumping a snapshot of the database"
+        Rake::Task["cbac:extract_snapshot"].invoke
+      end
+
+      ENV['CHANGE_TYPE'] = 'context'
+      generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
+
+      puts "Parsing pristine file #{generic_filename}"
+      generic_pristine_file = GenericPristineFile.new(generic_filename)
+
+      PristinePermission.delete_generic_permissions
+      puts "Deleted all staged generic permissions"
+
+      stage_permissions([generic_pristine_file])
+      puts "Staged #{generic_pristine_file.permissions.length.to_s} generic permissions."
+      puts "Task cbac:upgrade_pristine finished."
+    end
+
+    desc 'Upgrade all permissions by adding them to the staging area.'
+    task :upgrade_all => :environment do
+      if ENV['SKIP_SNAPSHOT'] == 'true'
+        puts "\nSKIP_SNAPSHOT provided - not dumping database."
+      else
+        puts "\nDumping a snapshot of the database"
+        Rake::Task["cbac:extract_snapshot"].invoke
+      end
+
+      ENV['CHANGE_TYPE'] = 'context'
+      filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
+      generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
+      puts "Parsing pristine file #{filename} and generic pristine file #{generic_filename}"
+
+      pristine_file = PristineFile.new(filename)
+      generic_pristine_file = GenericPristineFile.new(generic_filename)
+
+      PristinePermission.delete_generic_permissions
+      PristinePermission.delete_non_generic_permissions
+      puts "Deleted all current staged permissions"
+
+
+      stage_permissions([pristine_file, generic_pristine_file])
+      puts "Staged #{pristine_file.permissions.length.to_s} permissions and #{generic_pristine_file.permissions.length.to_s} generic permissions."
+      puts "Task cbac:upgrade_all finished."
     end
   end
 end

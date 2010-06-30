@@ -34,7 +34,7 @@ module Cbac
       return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user_id, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
       # Check the context roles Get the permissions
       privilege_sets.collect{|privilege_set|Cbac::Permission.find(:all, :conditions => ["privilege_set_id = ? AND generic_role_id = 0", privilege_set.id.to_s])}.flatten.each do |permission|
-        puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilegeset.name}" if Cbac::Config.verbose
+        puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilege_set.name}" if Cbac::Config.verbose
         eval_string = ContextRole.roles[permission.context_role.to_sym]
         # Not sure if this will work everywhere
         # TODO: sort this out
@@ -43,7 +43,7 @@ module Cbac
         begin
           return true if eval_string.call(context)
         rescue Exception => e
-          puts "Error in context role: #{permission.context_role} on privilege_set: #{permission.privilegeset.name}. Context: #{context}"
+          puts "Error in context role: #{permission.context_role} on privilege_set: #{permission.privilege_set.name}. Context: #{context}"
           raise e if RAILS_ENV == "development" or RAILS_ENV == "test" # In development mode, this should crash as hard as possible, but in further stages, it should not
         end
       end

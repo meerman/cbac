@@ -17,9 +17,9 @@ class CbacGenerator < Rails::Generator::Base
       m.directory "config/cbac"
       m.file "config/privileges.rb", "config/cbac/privileges.rb", :collision => :skip
       m.file "config/context_roles.rb", "config/cbac/context_roles.rb", :collision => :skip
-			
-			# deployment file
-			m.file "config/cbac.pristine", "config/cbac/cbac.pristine", :collision => :skip
+
+      # deployment file
+      m.file "config/cbac.pristine", "config/cbac/cbac.pristine", :collision => :skip
 
       # administration pages
       m.directory "app/controllers/cbac"
@@ -43,12 +43,12 @@ class CbacGenerator < Rails::Generator::Base
 
       # migrations
       puts "type of m: " + m.class.name
-      if migration_exists?("create_cbac") 
-				# This is an upgrade from a previous version of CBAC
-				m.migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate", {:migration_file_name => "create_cbac_upgrade_path"} unless migration_exists?("create_cbac_upgrade_path")
-			else
+      if migration_exists?("create_cbac")
+        # This is an upgrade from a previous version of CBAC
+        m.migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate", {:migration_file_name => "create_cbac_upgrade_path"} unless migration_exists?("create_cbac_upgrade_path")
+      else
         # This is the first install of CBAC into the current project	
-				m.migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate", {:migration_file_name => "create_cbac_from_scratch"} unless migration_exists?("create_cbac_from_scratch")
+        m.migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate", {:migration_file_name => "create_cbac_from_scratch"} unless migration_exists?("create_cbac_from_scratch")
       end
       # default fixtures
       m.file "fixtures/cbac_permissions.yml", "test/fixtures/cbac_permissions.yml"
@@ -56,8 +56,8 @@ class CbacGenerator < Rails::Generator::Base
       m.file "fixtures/cbac_memberships.yml", "test/fixtures/cbac_memberships.yml"
 
       # Rake task
-      m.directory "lib/tasks" 
+      m.directory "lib/tasks"
       m.file "tasks/cbac.rake", "lib/tasks/cbac.rake"
     end
-  end  
+  end
 end
