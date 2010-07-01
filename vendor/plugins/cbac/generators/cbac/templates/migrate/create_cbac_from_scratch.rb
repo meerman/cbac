@@ -21,6 +21,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
 
     create_table :cbac_privilege_set do |t|
       t.string :name
+      t.string :comment
       t.timestamps
     end
 
