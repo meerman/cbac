@@ -55,7 +55,7 @@ class Cbac::PermissionsController < ApplicationController
       Cbac::Permission.create(:generic_role_id => params[:generic_role_id], :privilege_set_id => params[:privilege_set_id])
     end
     role = Cbac::GenericRole.find(params[:generic_role_id])
-    render :partial => "cbac/permissions/update_generic_role.html", :locals => {:pristine_role =>role,
+    render :partial => "cbac/permissions/update_generic_role.html", :locals => {:role =>role,
       :set_id => params[:privilege_set_id], :update_partial => true}
   end
 end
