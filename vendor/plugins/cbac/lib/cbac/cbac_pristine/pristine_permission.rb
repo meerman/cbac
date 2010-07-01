@@ -6,7 +6,22 @@ module Cbac
     class PristinePermission < ActiveRecord::Base
       set_table_name 'cbac_staged_permissions'
 
-      belongs_to :pristine_role
+      belongs_to :pristine_role, :class_name => "Cbac::CbacPristine::PristineRole"
+
+      def privilege_set
+        Cbac::PrivilegeSetRecord.first(:conditions => {:name => privilege_set_name})
+      end
+
+      def operand_string
+        case operand
+          when '+'
+            return "add"
+          when '-'
+            return "revoke"
+          else
+            return "unknown"
+        end
+      end
 
       #convert this pristine line to a yml statement which can be used to create a yml fixtures file
       #executing this statement will result in one cbac_permission in the DB
@@ -60,6 +75,7 @@ module Cbac
       # reject this permission, but register it as a known permission. The user actually rejected this himself.
       def reject
         register_change
+        Cbac::CbacPristine::PristinePermission.delete(id) unless id.nil?
       end
 
       # add this permission to the cbac permission set, unless it already exists
@@ -67,7 +83,7 @@ module Cbac
         return if exists?
 
         permission = Cbac::Permission.new
-        permission.privilege_set = Cbac::PrivilegeSetRecord.first(:conditions => {:name => privilege_set_name})
+        permission.privilege_set = privilege_set
 
         if pristine_role.role_type == PristineRole.ROLE_TYPES[:context]
           permission.context_role = pristine_role.name
@@ -102,6 +118,8 @@ module Cbac
       def stage
         save unless known_permission_exists? or exists?
       end
+
+
 
       # clear the staging area of all generic pristine permissions
       def self.delete_generic_permissions

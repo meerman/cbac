@@ -5,7 +5,7 @@ module Cbac
       set_table_name "cbac_staged_roles"
 
       def self.ROLE_TYPES
-        {:context => "CONTEXT", :generic => "GENERIC", :admin => "ADMIN"}
+        {:context => "context", :generic => "generic", :admin => "administrator"}
       end
 
      
