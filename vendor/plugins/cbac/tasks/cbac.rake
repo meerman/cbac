@@ -300,7 +300,7 @@ EOF
       puts "Deleted all staged context and administrator permissions"
 
       stage_permissions([pristine_file])
-      puts "Staged #{pristine_file.permissions.length.to_s} permissions."
+      puts "Staged #{PristinePermission.count_non_generic_permissions.to_s} permissions."
       puts "Task cbac:upgrade_pristine finished."
     end
 
@@ -324,7 +324,7 @@ EOF
       puts "Deleted all staged generic permissions"
 
       stage_permissions([generic_pristine_file])
-      puts "Staged #{generic_pristine_file.permissions.length.to_s} generic permissions."
+      puts "Staged #{PristinePermission.count_generic_permissions.to_s} generic permissions."
       puts "Task cbac:upgrade_pristine finished."
     end
 
@@ -351,7 +351,7 @@ EOF
 
 
       stage_permissions([pristine_file, generic_pristine_file])
-      puts "Staged #{pristine_file.permissions.length.to_s} permissions and #{generic_pristine_file.permissions.length.to_s} generic permissions."
+      puts "Staged #{PristinePermission.count_non_generic_permissions.to_s} permissions and #{PristinePermission.count_generic_permissions.to_s} generic permissions."
       puts "Task cbac:upgrade_all finished."
     end
   end

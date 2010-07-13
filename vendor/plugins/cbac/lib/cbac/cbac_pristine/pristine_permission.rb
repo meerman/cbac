@@ -136,6 +136,14 @@ module Cbac
           delete(permission.id)
         end
       end
+
+      def self.count_generic_permissions
+        count(:joins => :pristine_role, :conditions => ["cbac_staged_roles.role_type = ?", PristineRole.ROLE_TYPES[:generic]])
+      end
+
+      def self.count_non_generic_permissions
+        count(:joins => :pristine_role, :conditions => ["cbac_staged_roles.role_type != ?", PristineRole.ROLE_TYPES[:generic]])
+      end
     end
   end
 end
