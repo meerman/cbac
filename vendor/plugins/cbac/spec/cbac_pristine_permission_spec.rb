@@ -1,5 +1,6 @@
-require 'spec'
+
 require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
+require 'spec'
 require 'cbac/cbac_pristine/pristine'
 require 'cbac/cbac_pristine/pristine_role'
 require 'cbac/cbac_pristine/pristine_permission'
@@ -87,7 +88,7 @@ describe "CbacPristinePermission" do
       
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role)
 
-      pristine_permission.exists?.should be_true
+      pristine_permission.cbac_permission_exists?.should be_true
     end
 
     it "should return true if the pristine permission exists as context cbac permission in the database" do
@@ -95,19 +96,19 @@ describe "CbacPristinePermission" do
 
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
 
-      pristine_permission.exists?.should be_true
+      pristine_permission.cbac_permission_exists?.should be_true
     end
 
     it "should return false if the pristine permission does not exist as context cbac permission in the database" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
 
-      pristine_permission.exists?.should be_false
+      pristine_permission.cbac_permission_exists?.should be_false
     end
 
     it "should return false if the pristine permission does not exist as a generic cbac permission in the database" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role)
 
-      pristine_permission.exists?.should be_false
+      pristine_permission.cbac_permission_exists?.should be_false
     end
 
     it "should return false if a similar pristine permission exist as a generic cbac permission in the database, but for another generic role" do
@@ -116,7 +117,7 @@ describe "CbacPristinePermission" do
 
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role)
 
-      pristine_permission.exists?.should be_false
+      pristine_permission.cbac_permission_exists?.should be_false
     end
 
     it "should return false if a similar pristine permission exist as a context cbac permission in the database, but for another context role" do
@@ -124,7 +125,7 @@ describe "CbacPristinePermission" do
 
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
 
-      pristine_permission.exists?.should be_false
+      pristine_permission.cbac_permission_exists?.should be_false
     end
   end
 
@@ -154,18 +155,18 @@ describe "CbacPristinePermission" do
     end
 
 
-    it "should add the context permission to the database if operand + is used" do
+    it "should add the context permission to the database if operation + is used" do
       pristine_permission =  PristinePermission.new(:privilege_set_name =>  @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
       proc {
         pristine_permission.accept
       }.should change(Cbac::Permission, :count).by(1)
     end
 
-    it "should create a generic permission if operand + is used" do
+    it "should create a generic permission if operation + is used" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
       proc {
         pristine_permission.accept
@@ -173,7 +174,7 @@ describe "CbacPristinePermission" do
     end
 
     it "should delete the pristine permission since it was accepted" do
-      pristine_permission =  PristinePermission.create(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role, :operand => '+')
+      pristine_permission =  PristinePermission.create(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role, :operation => '+')
 
       proc {
         pristine_permission.accept
@@ -185,7 +186,7 @@ describe "CbacPristinePermission" do
 
       cbac_admin_role = PristineRole.new(:role_id => 1, :role_type => PristineRole.ROLE_TYPES[:generic], :name => "cbac_administrator")
       pristine_permission =  PristinePermission.new(:privilege_set_name => cbac_privilege_set.name, :pristine_role => cbac_admin_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
       proc {
         pristine_permission.accept
@@ -194,27 +195,29 @@ describe "CbacPristinePermission" do
 
     it "should use an existing role if possible" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_admin_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
-      cbac_permission = pristine_permission.accept
+      pristine_permission.accept
+      # test smell: depends on a clean database
+      cbac_permission = Cbac::Permission.first
 
       cbac_permission.generic_role.should == @admin_role
     end
 
-    it "should remove an existing permission if operand - is used" do
+    it "should remove an existing permission if operation - is used" do
       Cbac::Permission.create(:privilege_set_id => @privilege_set.id, :generic_role_id => 0, :context_role => @pristine_context_role.name)
 
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '-'
+      pristine_permission.operation = '-'
 
       proc {
         pristine_permission.accept
       }.should change(Cbac::Permission, :count).by(-1)
     end
 
-    it "should raise an error if operand - is used and the permission does not exist" do
+    it "should raise an error if operation - is used and the permission does not exist" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '-'
+      pristine_permission.operation = '-'
 
       proc {
         pristine_permission.accept
@@ -223,7 +226,7 @@ describe "CbacPristinePermission" do
 
     it "should create a known permission to record a change" do
       pristine_permission =  PristinePermission.new(:privilege_set_name =>  @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
       proc {
         pristine_permission.accept
@@ -232,7 +235,7 @@ describe "CbacPristinePermission" do
 
     it "should create a known permission with specified permission identifier" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
       pristine_permission.accept
 
@@ -243,7 +246,7 @@ describe "CbacPristinePermission" do
 
     it "should create a known permission with specified role type" do
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '+'
+      pristine_permission.operation = '+'
 
       pristine_permission.accept
 
@@ -252,11 +255,11 @@ describe "CbacPristinePermission" do
       known_permission.permission_type.should == Cbac::KnownPermission.PERMISSION_TYPES[:context]
     end
 
-    it "should also create a known permission if operand - is used to revoke a permission" do
+    it "should also create a known permission if operation - is used to revoke a permission" do
       Cbac::Permission.create(:privilege_set_id => @privilege_set.id, :generic_role_id => 0, :context_role => @pristine_context_role.name)
 
       pristine_permission =  PristinePermission.new(:privilege_set_name => @privilege_set.name, :pristine_role => @pristine_context_role)
-      pristine_permission.operand = '-'
+      pristine_permission.operation = '-'
 
       proc {
         pristine_permission.accept
@@ -271,7 +274,7 @@ describe "CbacPristinePermission" do
     end
 
     it "should persist the pristine permission to the database" do
-      pristine_permission =  PristinePermission.new(:privilege_set_name => "login", :pristine_role => @pristine_context_role, :operand => '+')
+      pristine_permission =  PristinePermission.new(:privilege_set_name => "login", :pristine_role => @pristine_context_role, :operation => '+')
 
       proc {
         pristine_permission.stage
@@ -280,30 +283,51 @@ describe "CbacPristinePermission" do
     end
 
     it "should persist the associated role if it doesn't exist yet" do
-      pristine_permission =  PristinePermission.new(:privilege_set_name => "login", :pristine_role => @pristine_context_role, :operand => '+')
+      pristine_permission =  PristinePermission.new(:privilege_set_name => "login", :pristine_role => @pristine_context_role, :operation => '+')
 
       proc {
         pristine_permission.stage
       }.should change(Cbac::CbacPristine::PristineRole, :count).by(1)
     end
 
-    it "should not create a new pristine permission if the pristine permission has already been persisted" do
-      pristine_permission =  PristinePermission.create(:privilege_set_name => "login", :pristine_role => @pristine_context_role, :operand => '+')
+    it "should not create a new pristine permission if the cbac permission exists and the pristine permission wants to add" do
+      privilege_set = Cbac::PrivilegeSetRecord.create(:name => "login")
+      Cbac::Permission.create(:privilege_set_id => privilege_set.id, :generic_role_id => 0, :context_role => @pristine_context_role.name)
 
+      pristine_permission =  PristinePermission.new(:operation => '+', :privilege_set_name => privilege_set.name, :pristine_role => @pristine_context_role)
       proc {
         pristine_permission.stage
       }.should_not change(Cbac::CbacPristine::PristinePermission, :count)
     end
 
-    it "should not create a new pristine permission if the cbac permission actually exists" do
+    it "should create a new pristine permission if the cbac permission exists and the pristine permission wants to revoke" do
       privilege_set = Cbac::PrivilegeSetRecord.create(:name => "login")
       Cbac::Permission.create(:privilege_set_id => privilege_set.id, :generic_role_id => 0, :context_role => @pristine_context_role.name)
 
-      pristine_permission =  PristinePermission.new(:privilege_set_name => privilege_set.name, :pristine_role => @pristine_context_role)
+      pristine_permission =  PristinePermission.new(:operation => '-', :privilege_set_name => privilege_set.name, :pristine_role => @pristine_context_role)
       proc {
         pristine_permission.stage
-      }.should_not change(Cbac::CbacPristine::PristinePermission, :count)
+      }.should change(Cbac::CbacPristine::PristinePermission, :count).by(1)
+    end
 
+    it "should not create a new pristine permission if a staged add permission exists and this pristine permission wants to revoke" do
+      privilege_set_name = "chat"
+      PristinePermission.new(:operation => '+', :privilege_set_name => privilege_set_name, :pristine_role => @pristine_context_role)
+      pristine_revoke_permission =  PristinePermission.new(:operation => '-', :privilege_set_name => privilege_set_name, :pristine_role => @pristine_context_role)
+
+      proc {
+        pristine_revoke_permission.stage
+      }.should_not change(Cbac::CbacPristine::PristinePermission, :count).by(1)
+    end
+
+    it "should delete a staged add permission if the pristine permission wants to revoke the same permission" do
+      privilege_set_name = "chat"
+      PristinePermission.create(:operation => '+', :privilege_set_name => privilege_set_name, :pristine_role => @pristine_context_role)
+      pristine_revoke_permission =  PristinePermission.new(:operation => '-', :privilege_set_name => privilege_set_name, :pristine_role => @pristine_context_role)
+
+      proc {
+        pristine_revoke_permission.stage
+      }.should change(Cbac::CbacPristine::PristinePermission, :count).by(-1)
     end
 
     it "should not create a new pristine permission if a cbac known permission exists" do
@@ -316,6 +340,18 @@ describe "CbacPristinePermission" do
       }.should_not change(Cbac::CbacPristine::PristinePermission, :count)
 
     end
+
+    it "should raise an error if the same pristine permission is staged twice" do
+      privilege_set_name = "chat"
+      PristinePermission.create(:operation => '+', :privilege_set_name => privilege_set_name, :pristine_role => @pristine_context_role, :line_number => 2)
+      pristine_permission =  PristinePermission.new(:operation => '+', :privilege_set_name => privilege_set_name, :pristine_role => @pristine_context_role, :line_number => 3)
+
+      proc {
+        pristine_permission.stage
+      }.should raise_error(ArgumentError)
+    end
+
+
   end
 
 end

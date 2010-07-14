@@ -1,4 +1,5 @@
 ENV["RAILS_ENV"] ||= 'test'
+
 require 'spec/autorun'
 require 'spec/rails'
 

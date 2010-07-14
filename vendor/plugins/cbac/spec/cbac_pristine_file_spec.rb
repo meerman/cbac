@@ -245,7 +245,7 @@ describe "CbacPristineFile" do
       pristine_file.parse
 
       pristine_file.permissions.length.should == 3
-      pristine_file.permissions[2].operand.should == '-'
+      pristine_file.permissions[2].operation.should == '-'
     end
 
     it "should fail if a permission is revoked which wasn't added before" do
@@ -290,35 +290,35 @@ describe "CbacPristineFile" do
     end
 
     it "should filter out the permissions which were revoked" do
-      permission_to_revoke = PristinePermission.new(:privilege_set_name => "chat", :pristine_role => @context_role, :operand => '+')
+      permission_to_revoke = PristinePermission.new(:privilege_set_name => "chat", :pristine_role => @context_role, :operation => '+')
       @pristine_file.permissions.push(permission_to_revoke)
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name => permission_to_revoke.privilege_set_name, :pristine_role => permission_to_revoke.pristine_role, :operand => '-'))
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name => permission_to_revoke.privilege_set_name, :pristine_role => permission_to_revoke.pristine_role, :operation => '-'))
 
       @pristine_file.permission_set.should_not include(permission_to_revoke)
     end
 
      it "should not include the revoke permission itself" do
-      revoke_permission = PristinePermission.new(:privilege_set_name => "chat", :pristine_role => @context_role, :operand => '-')
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name => revoke_permission.privilege_set_name, :pristine_role => revoke_permission.pristine_role, :operand => '+'))
+      revoke_permission = PristinePermission.new(:privilege_set_name => "chat", :pristine_role => @context_role, :operation => '-')
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name => revoke_permission.privilege_set_name, :pristine_role => revoke_permission.pristine_role, :operation => '+'))
       @pristine_file.permissions.push(revoke_permission)
 
       @pristine_file.permission_set.should_not include(revoke_permission)
     end
 
     it "should contain the permission if it is re-applied" do
-      re_applied_permission = PristinePermission.new(:privilege_set_name => "chat", :pristine_role => @context_role, :operand => '+')
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name => re_applied_permission.privilege_set_name, :pristine_role => re_applied_permission.pristine_role, :operand => '+'))
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  re_applied_permission.privilege_set_name, :pristine_role => re_applied_permission.pristine_role, :operand => '-'))
+      re_applied_permission = PristinePermission.new(:privilege_set_name => "chat", :pristine_role => @context_role, :operation => '+')
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name => re_applied_permission.privilege_set_name, :pristine_role => re_applied_permission.pristine_role, :operation => '+'))
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  re_applied_permission.privilege_set_name, :pristine_role => re_applied_permission.pristine_role, :operation => '-'))
       @pristine_file.permissions.push(re_applied_permission)
 
       @pristine_file.permission_set.should include(re_applied_permission)
     end
 
     it "should raise an error if a permission is revoked which wasn't created before" do
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "chat", :pristine_role => @context_role, :operand => '+'))
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "login", :pristine_role => @context_role, :operand =>  '+'))
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "blog_read", :pristine_role => @context_role, :operand =>  '-'))
-      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "update_blog", :pristine_role => @context_role, :operand => '+'))
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "chat", :pristine_role => @context_role, :operation => '+'))
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "login", :pristine_role => @context_role, :operation =>  '+'))
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "blog_read", :pristine_role => @context_role, :operation =>  '-'))
+      @pristine_file.permissions.push(PristinePermission.new(:privilege_set_name =>  "update_blog", :pristine_role => @context_role, :operation => '+'))
 
       proc {
         @pristine_file.permission_set
