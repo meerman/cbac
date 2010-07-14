@@ -16,7 +16,7 @@
     </tr>
     <% @permissions.each_with_index do |permission, index|  %>
         <tr>
-          <td><span><%=permission.operand_string.capitalize%></span><input type="hidden" name="permissions[<%=index.to_s%>][id]" value="<%=permission.id.to_s%>"/></td>
+          <td><span><%=permission.operation_string.capitalize%></span><input type="hidden" name="permissions[<%=index.to_s%>][id]" value="<%=permission.id.to_s%>"/></td>
           <td><span title='<%=permission.privilege_set.comment%>'><%=permission.privilege_set_name%></span></td>
           <td><span><%=permission.pristine_role.role_type%></span></td>
           <td><span><%=permission.pristine_role.name%></span></td>

@@ -1,0 +1,32 @@
+<div class="cbac">
+  <h1>Permissions: available upgrades</h1>
+  <span>Choose which of these available permissions you want to accept or reject.
+    Each upgrade either adds a new permission or revokes an existing permission.
+    You can also leave the available upgrade for another time.</span><br/><br/>
+  <% form_tag cbac_upgrade_update_path  do %>
+  <table>
+    <tr>
+      <th class="medium">Add /revoke</th>
+      <th class="large">Privilegeset</th>
+      <th class="medium">Roletype</th>
+      <th class="medium">Role</th>
+      <th class="small">Accept</th>
+      <th class="small">Reject</th>
+      <th class="small">Leave</th>
+    </tr>
+    <% @permissions.each_with_index do |permission, index|  %>
+        <tr>
+          <td><span><%=permission.operation_string.capitalize%></span><input type="hidden" name="permissions[<%=index.to_s%>][id]" value="<%=permission.id.to_s%>"/></td>
+          <td><span title='<%=permission.privilege_set.comment%>'><%=permission.privilege_set_name%></span></td>
+          <td><span><%=permission.pristine_role.role_type%></span></td>
+          <td><span><%=permission.pristine_role.name%></span></td>
+          <td><input type="radio" name="permissions[<%=index.to_s%>][action]" value="accept"/></td>
+          <td><input type="radio" name="permissions[<%=index.to_s%>][action]" value="reject"/></td>
+          <td><input type="radio" name="permissions[<%=index.to_s%>][action]" value="leave" checked="checked"/></td>
+        </tr>
+     <% end %>
+  </table>
+    <input type="button" value="Cancel" onclick="window.location.reload();"/>
+    <input type="submit" value="OK"/>
+  <% end %>
+</div>
