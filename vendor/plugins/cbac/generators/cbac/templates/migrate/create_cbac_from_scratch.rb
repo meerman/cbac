@@ -30,7 +30,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
       t.string :privilege_set_name
       t.integer :line_number
       t.string :comment
-      t.text :operand, :limit => 2
+      t.text :operation, :limit => 2
       t.timestamps
     end
 
