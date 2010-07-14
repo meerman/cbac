@@ -1,4 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), 'pristine_file'))
+require File.expand_path(File.join(File.dirname(__FILE__), 'pristine_permission'))
 
 module Cbac
   module CbacPristine
@@ -78,18 +79,42 @@ module Cbac
       Cbac::CbacPristine::PristineRole.delete_all
     end
 
-    def drop_generic_known_permissions
+    def delete_generic_known_permissions
       known_permissions = Cbac::KnownPermission.find(:all, :conditions => {:permission_type => Cbac::KnownPermission.PERMISSION_TYPES[:generic]})
       known_permissions.each { |p| p.destroy }
     end
 
-    def drop_generic_permissions
+    def delete_generic_permissions
       permissions = Cbac::Permission.find(:all, :conditions => {:context_role => nil})
       (permissions.select { |perm| perm.generic_role.name != "administrators" }).each { |p| p.destroy }
     end
 
+    def delete_non_generic_staged_permissions
+      PristinePermission.delete_non_generic_permissions
+    end
+
+    def delete_generic_staged_permissions
+      PristinePermission.delete_generic_permissions
+    end
+
     def database_contains_cbac_data?
       return (Cbac::GenericRole.count != 0 or Cbac::Membership.count != 0 or Cbac::Permission.count != 0 or Cbac::KnownPermission.count != 0 or Cbac::CbacPristine::PristinePermission.count != 0 or Cbac::CbacPristine::PristineRole.count != 0)
+    end
+
+    def create_generic_pristine_file(file_name)
+       GenericPristineFile.new(file_name)      
+    end
+
+    def create_pristine_file(file_name)
+       PristineFile.new(file_name)
+    end
+
+    def number_of_generic_staged_permissions
+      PristinePermission.count_generic_permissions
+    end
+
+    def number_of_non_generic_staged_permissions
+      PristinePermission.count_non_generic_permissions
     end
 
     def flock(file, mode)

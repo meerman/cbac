@@ -1,4 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), 'pristine_role'))
+require File.expand_path(File.join(File.dirname(__FILE__), 'pristine_permission'))
 require 'active_record'
 
 module Cbac
@@ -12,8 +13,8 @@ module Cbac
         Cbac::PrivilegeSetRecord.first(:conditions => {:name => privilege_set_name})
       end
 
-      def operand_string
-        case operand
+      def operation_string
+        case operation
           when '+'
             return "add"
           when '-'
@@ -43,12 +44,42 @@ module Cbac
         yml << "\n"
       end
 
-      # checks if the current cbac permissions contain a permission which is exactly like this one
-      def exists?
+      # checks if the current cbac permissions contains a permission which is exactly like this one
+      def cbac_permission_exists?
         if pristine_role.role_type == PristineRole.ROLE_TYPES[:context]
           Cbac::Permission.count(:joins => [:privilege_set], :conditions => {:cbac_privilege_set => {:name => privilege_set_name}, :context_role => pristine_role.name}) > 0
         else
           Cbac::Permission.count(:joins => [:generic_role, :privilege_set], :conditions => {:cbac_privilege_set => {:name => privilege_set_name}, :cbac_generic_roles => {:name => pristine_role.name}}) > 0
+        end
+      end
+
+      # checks if a pristine permission with the same properties(except line_number) exists in the database
+      def exists?
+        Cbac::CbacPristine::PristinePermission.count(:conditions => {:privilege_set_name => privilege_set_name, :pristine_role_id => pristine_role_id, :operation => operation}) > 0
+      end
+
+      # checks if a pristine permission with the exact same properties(except line_number), but the reverse operation exists in the database
+      def reverse_exists?
+        Cbac::CbacPristine::PristinePermission.count(:conditions => {:privilege_set_name => privilege_set_name, :pristine_role_id => pristine_role_id, :operation => reverse_operation}) > 0
+      end
+
+      # delete the pristine permission with the reverse operation of this one
+      def delete_reverse_permission
+        reverse_permission = Cbac::CbacPristine::PristinePermission.first(:conditions => {:privilege_set_name => privilege_set_name, :pristine_role_id => pristine_role_id, :operation => reverse_operation})
+        reverse_permission.delete
+      end
+
+      # get the reverse operation of this one
+      def reverse_operation
+        case operation
+          when '+'
+            return '-'
+          when '-'
+            return '+'
+          when 'x', '=>'
+            raise NotImplementedError, "Error: using an x or => in a pristine file is not implemented yet"
+          else
+            raise ArgumentError, "Error: invalid operation #{operation} is used in the pristine file"
         end
       end
 
@@ -59,7 +90,7 @@ module Cbac
 
       # accept this permission and apply to the current cbac permission set
       def accept
-        case operand
+        case operation
           when '+'
             handle_grant_permission
           when '-'
@@ -67,20 +98,20 @@ module Cbac
           when 'x', '=>'
             raise NotImplementedError, "Error: using an x or => in a pristine file is not implemented yet"
           else
-            raise ArgumentError, "Error: invalid operand #{operand} is used in the pristine file"
+            raise ArgumentError, "Error: invalid operation #{operation} is used in the pristine file"
         end
-        Cbac::CbacPristine::PristinePermission.delete(id) unless id.nil?
+        PristinePermission.delete(id) unless id.nil?
       end
 
       # reject this permission, but register it as a known permission. The user actually rejected this himself.
       def reject
         register_change
-        Cbac::CbacPristine::PristinePermission.delete(id) unless id.nil?
+        PristinePermission.delete(id) unless id.nil?
       end
 
       # add this permission to the cbac permission set, unless it already exists
       def handle_grant_permission
-        return if exists?
+        return if cbac_permission_exists?
 
         permission = Cbac::Permission.new
         permission.privilege_set = privilege_set
@@ -98,7 +129,7 @@ module Cbac
 
       # revoke this permission from the current permission set, raises an error if it doesn't exist yet
       def handle_revoke_permission
-        raise ArgumentError, "Error: trying to revoke permission #{privilege_set_name} for #{pristine_role.name}, but this permission does not exist" unless exists?
+        raise ArgumentError, "Error: trying to revoke permission #{privilege_set_name} for #{pristine_role.name}, but this permission does not exist" unless cbac_permission_exists?
 
         if pristine_role.role_type == PristineRole.ROLE_TYPES[:context]
           permission = Cbac::Permission.first(:joins => [:privilege_set], :conditions => {:cbac_privilege_set => {:name => privilege_set_name}, :context_role => pristine_role.name})
@@ -116,7 +147,21 @@ module Cbac
 
       # add this permission to the staging area
       def stage
-        save unless known_permission_exists? or exists?
+        raise ArgumentError, "Error: this staged permission already exists. Record with line number #{line_number} is a duplicate permission." if exists?
+        return if known_permission_exists?
+
+        if operation == '-'
+          # if the reverse permission is also staged, remove it and do not add this one
+          if reverse_exists?
+            delete_reverse_permission
+            return
+          end
+          # if this is an attempt to revoke a permission, it should exist as a real cbac permission!
+          save if cbac_permission_exists?
+        elsif operation == '+'
+          # if this is an attempt to add a permission, it MUST not exist yet
+          save unless cbac_permission_exists?
+        end
       end
 
 

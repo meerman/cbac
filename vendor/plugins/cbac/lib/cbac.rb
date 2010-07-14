@@ -6,10 +6,13 @@
 module Cbac
   if Cbac::Setup.check
     puts "CBAC properly installed"
-
-    require File.dirname(__FILE__) + '/cbac/privilege.rb'
-    require File.dirname(__FILE__) + '/cbac/privilege_set.rb'
-    require File.dirname(__FILE__) + '/cbac/context_role.rb'
+   
+    require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/privilege'))
+    require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/privilege_set'))
+    require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/context_role'))
+    require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine'))
+    require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine_file'))
+    require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine_permission'))
 
     # check performs a check to see if the user is allowed to access the given
     # resource. Example: authorization_check("BlogController", "index", :get)

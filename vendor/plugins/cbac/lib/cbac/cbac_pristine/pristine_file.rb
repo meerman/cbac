@@ -33,13 +33,13 @@ module Cbac
           else
             last_row_number = pristine_permission.line_number
           end
-          pristine_permission.operand = header_match.captures[1]
+          pristine_permission.operation = header_match.captures[1]
           # parse the role and privilege set name
           pristine_permission.privilege_set_name = parse_privilege_set_name(permission_line, line_number)
           pristine_permission.pristine_role = parse_role(permission_line, line_number, use_db)
           # it's pristine, so changes should be treated as such
           # if a permission was created and later revoked, we should remove the pristine line which was created before
-          case pristine_permission.operand
+          case pristine_permission.operation
             when '+'
               @permissions.push(pristine_permission)
             when '-'
@@ -86,14 +86,14 @@ module Cbac
       def permission_set
         permission_set = Array.new(@permissions)
         @permissions.each do |pristine_permission|
-           case pristine_permission.operand
+           case pristine_permission.operation
             when '+'
               permission_set.push(pristine_permission)
             when '-'
               permission_to_delete = nil
               #check if this is actually a permission that can be revoked.
               permission_set.each do |known_permission|
-                if known_permission.privilege_set_name == pristine_permission.privilege_set_name and known_permission.pristine_role.name == pristine_permission.pristine_role.name and known_permission.operand == '+'
+                if known_permission.privilege_set_name == pristine_permission.privilege_set_name and known_permission.pristine_role.name == pristine_permission.pristine_role.name and known_permission.operation == '+'
                   permission_to_delete = known_permission
                   break
                 end

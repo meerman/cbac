@@ -1,6 +1,5 @@
 #TODO: zip (or something) the directory resulting from a snapshot and delete it
 #TODO: unzip (or something) the provided snapshot and load from it, then delete temp dir
-#TODO: push as much as possible from this file to the core of CBAC, since reading pristine files from the front end will be required later on as well.
 #TODO: add staging area to extracted snapshot, inserted snapshot, clearing code, etc.
 
 #TODO: add comments to pristine lines, in a Comment() style
@@ -14,31 +13,6 @@
 # 6) User grants permission X again
 # 7) User upgrades again. At this point, we want the user to be warned that the devteam thinks granting this permission is not a good idea. 
 #    This is only possible if the non-change in #5 is not registered as KnownChange
-
-#require File.expand_path(File.join(File.dirname(__FILE__), '../../lib/cbac/cbac_pristine/pristine_file'))
-#require File.expand_path(File.join(File.dirname(__FILE__), '../../lib/cbac/cbac_pristine/pristine'))
-
-cbac_gem_dir = nil
-Dir["#{RAILS_ROOT}/vendor/gems/*"].each do |subdir|
-  cbac_gem_dir = subdir if subdir.gsub("#{RAILS_ROOT}/vendor/gems/", "") =~ /^(\w+-)?cbac-(\d+)/
-end
-cbac_plugin_dir = File.expand_path(File.dirname(__FILE__) + '/../../vendor/plugins/cbac')
-
-if cbac_gem_dir
-  $LOAD_PATH.unshift("#{cbac_gem_dir}/lib")
-elsif File.exist?(cbac_plugin_dir)
-  $LOAD_PATH.unshift("#{cbac_plugin_dir}/lib")
-end
-
-# Don't load rspec if running "rake gems:*"
-unless ARGV.any? { |a| a =~ /^gems/ }
-
-
-  require 'cbac/cbac_pristine/pristine'
-  require 'cbac/cbac_pristine/pristine_file'
-  require 'cbac/cbac_pristine/pristine_permission'
-
-  include Cbac::CbacPristine
 
 # Get a privilege set that fulfills the provided conditions
   def get_privilege_set(conditions)
@@ -85,13 +59,20 @@ unless ARGV.any? { |a| a =~ /^gems/ }
     end
   end
 
+  def get_cbac_pristine_adapter
+    adapter_class = Class.new
+    adapter_class.send :include, Cbac::CbacPristine
+    adapter_class.new
+  end
+
   namespace :cbac do
     desc 'Initialize CBAC tables with bootstrap data. Allows ADMINUSER to log in and visit CBAC administration pages. Also, if a Privilege Set called "login" exists, this privilege is granted to "everyone"'
     task :bootstrap => :environment do
-      if database_contains_cbac_data?
+      adapter = get_cbac_pristine_adapter
+      if adapter.database_contains_cbac_data?
         if ENV['FORCE'] == "true"
           puts "FORCE specified: emptying CBAC tables"
-          clear_cbac_tables
+          adapter.clear_cbac_tables
         else
           puts "CBAC bootstrap failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
           exit
@@ -175,13 +156,14 @@ EOF
 
     desc 'Restore a snapshot of authorization settings that was extracted earlier. Specify a snapshot using SNAPSHOT_NAME'
     task :restore_snapshot => :environment do
+      adapter = get_cbac_pristine_adapter
       if ENV['SNAPSHOT_NAME'].nil?
         puts "Missing required parameter SNAPSHOT_NAME. Exiting."
         exit
-      elsif database_contains_cbac_data?
+      elsif adapter.database_contains_cbac_data?
         if ENV['FORCE'] == "true"
           puts "FORCE specified: emptying CBAC tables"
-          clear_cbac_tables
+          adapter.clear_cbac_tables
         else
           puts "Reloading snapshot failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
           exit
@@ -204,7 +186,8 @@ EOF
 
     desc 'Restore permissions to factory settings by loading the pristine file into the database'
     task :pristine => :environment do
-      if database_contains_cbac_data?
+      adapter = get_cbac_pristine_adapter
+      if adapter.database_contains_cbac_data?
         if ENV['FORCE'] == "true"
           puts "FORCE specified: emptying CBAC tables"
         else
@@ -221,19 +204,20 @@ EOF
       end
       filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
       puts "Parsing pristine file #{filename}"
-      pristine_file = PristineFile.new(filename)
-      set_pristine_state([pristine_file], true)
+      pristine_file = adapter.create_pristine_file(filename)
+      adapter.set_pristine_state([pristine_file], true)
       puts "Applied #{pristine_file.permissions.length.to_s} permissions."
       puts "Task cbac:pristine finished."
     end
 
     desc 'Restore generic permissions to factory settings'
     task :pristine_generic => :environment do
-      if database_contains_cbac_data?
+      adapter = get_cbac_pristine_adapter
+      if adapter.database_contains_cbac_data?
         if ENV['FORCE'] == "true"
           puts "FORCE specified. Dropping all generic permissions and replacing them with generic pristine"
-          drop_generic_known_permissions
-          drop_generic_permissions
+          adapter.delete_generic_known_permissions
+          adapter.delete_generic_permissions
         else
           puts "CBAC pristine failed: CBAC tables are nonempty. Specify FORCE=true to override this check and empty the tables"
           exit
@@ -249,15 +233,16 @@ EOF
 
       filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
       puts "Parsing pristine file #{filename}"
-      pristine_file = GenericPristineFile.new(filename)
-      set_pristine_state([pristine_file], false)
+      pristine_file = adapter.create_generic_pristine_file(filename)
+      adapter.set_pristine_state([pristine_file], false)
       puts "Applied #{pristine_file.permissions.length.to_s} permissions."
       puts "Task cbac:pristine_generic finished."
     end
 
     desc 'Restore all permissions to factory state. Uses the pristine file and the generic pristine file'
     task :pristine_all => :environment do
-      if database_contains_cbac_data?
+      adapter = get_cbac_pristine_adapter
+      if adapter.database_contains_cbac_data?
         if ENV['FORCE'] == "true"
           puts "FORCE specified: emptying CBAC tables"
         else
@@ -275,15 +260,16 @@ EOF
       filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
       generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
       puts "Parsing pristine file #{filename} and generic pristine file #{generic_filename}"
-      pristine_file = PristineFile.new(filename)
-      generic_pristine_file = GenericPristineFile.new(generic_filename)
-      set_pristine_state([pristine_file, generic_pristine_file], true)
+      pristine_file = adapter.create_pristine_file(filename)
+      generic_pristine_file = adapter.create_generic_pristine_file(generic_filename)
+      adapter.set_pristine_state([pristine_file, generic_pristine_file], true)
       puts "Applied #{pristine_file.permissions.length.to_s} permissions and #{generic_pristine_file.permissions.length.to_s} generic permissions."
       puts "Task cbac:pristine_all finished."
     end
 
     desc 'Upgrade permissions by adding them to the staging area. Does not upgrade generic permissions'
     task :upgrade_pristine => :environment do
+      adapter = get_cbac_pristine_adapter
       if ENV['SKIP_SNAPSHOT'] == 'true'
         puts "\nSKIP_SNAPSHOT provided - not dumping database."
       else
@@ -295,18 +281,19 @@ EOF
       filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
       puts "Parsing pristine file #{filename}"
 
-      pristine_file = PristineFile.new(filename)
-      PristinePermission.delete_non_generic_permissions
+      pristine_file = adapter.create_pristine_file(filename)
+      adapter.delete_non_generic_staged_permissions
       puts "Deleted all staged context and administrator permissions"
 
-      stage_permissions([pristine_file])
-      puts "Staged #{PristinePermission.count_non_generic_permissions.to_s} permissions."
+      adapter.stage_permissions([pristine_file])
+      puts "Staged #{adapter.number_of_non_generic_staged_permissions.to_s} permissions."
       puts "Task cbac:upgrade_pristine finished."
     end
 
 
     desc 'Upgrade generic permissions by adding them to the staging area. Does not upgrade context or admin permissions.'
     task :upgrade_pristine_generic => :environment do
+      adapter = get_cbac_pristine_adapter
       if ENV['SKIP_SNAPSHOT'] == 'true'
         puts "\nSKIP_SNAPSHOT provided - not dumping database."
       else
@@ -318,18 +305,19 @@ EOF
       generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
 
       puts "Parsing pristine file #{generic_filename}"
-      generic_pristine_file = GenericPristineFile.new(generic_filename)
+      generic_pristine_file = adapter.create_generic_pristine_file(generic_filename)
 
-      PristinePermission.delete_generic_permissions
+      adapter.delete_non_generic_staged_permissions
       puts "Deleted all staged generic permissions"
 
-      stage_permissions([generic_pristine_file])
-      puts "Staged #{PristinePermission.count_generic_permissions.to_s} generic permissions."
+      adapter.stage_permissions([generic_pristine_file])
+      puts "Staged #{adapter.number_of_generic_staged_permissions.to_s} generic permissions."
       puts "Task cbac:upgrade_pristine finished."
     end
 
     desc 'Upgrade all permissions by adding them to the staging area.'
     task :upgrade_all => :environment do
+      adapter = get_cbac_pristine_adapter
       if ENV['SKIP_SNAPSHOT'] == 'true'
         puts "\nSKIP_SNAPSHOT provided - not dumping database."
       else
@@ -342,17 +330,16 @@ EOF
       generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
       puts "Parsing pristine file #{filename} and generic pristine file #{generic_filename}"
 
-      pristine_file = PristineFile.new(filename)
-      generic_pristine_file = GenericPristineFile.new(generic_filename)
+      pristine_file = adapter.create_pristine_file(filename)
+      generic_pristine_file = adapter.create_generic_pristine_file(generic_filename)
 
-      PristinePermission.delete_generic_permissions
-      PristinePermission.delete_non_generic_permissions
+      adapter.delete_generic_staged_permissions
+      adapter.delete_non_generic_staged_permissions
       puts "Deleted all current staged permissions"
 
 
-      stage_permissions([pristine_file, generic_pristine_file])
-      puts "Staged #{PristinePermission.count_non_generic_permissions.to_s} permissions and #{PristinePermission.count_generic_permissions.to_s} generic permissions."
+      adapter.stage_permissions([pristine_file, generic_pristine_file])
+      puts "Staged #{adapter.number_of_non_generic_staged_permissions.to_s} permissions and #{adapter.number_of_generic_staged_permissions.to_s} generic permissions."
       puts "Task cbac:upgrade_all finished."
     end
-  end
 end
