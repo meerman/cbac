@@ -9,7 +9,7 @@ module Cbac
 
       pristine_files.each do |pristine_file|
         #if the pristine file wasn't parsed yet, we'll do it here
-        pristine_file.parse(false) if pristine_file.lines.empty?
+        pristine_file.parse(false) if pristine_file.permissions.empty?
         pristine_file.generic_roles.each do |generic_role|
           # we only want the unique generic roles, because the yml file cannot have duplicates
           has_role = false

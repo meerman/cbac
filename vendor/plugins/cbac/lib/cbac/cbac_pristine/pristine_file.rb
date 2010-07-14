@@ -147,7 +147,7 @@ module Cbac
             end
           end
           role = use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]}) : nil
-          role =  PristineRole.new(:role_id => @generic_roles.length + 1, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]) if role.nil?
+          role =  PristineRole.new(:role_id => @generic_roles.length + 2, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]) if role.nil?
           @generic_roles.push(role)
           return role
         end
