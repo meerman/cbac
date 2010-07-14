@@ -21,16 +21,23 @@ class CreateCbacFromScratch < ActiveRecord::Migration
 
     create_table :cbac_privilege_set do |t|
       t.string :name
+      t.string :comment
       t.timestamps
     end
 
-    create_table :cbac_staged_changes do |t|
-      t.integer :generic_role_id, :default => 0
-      t.string :context_role
-      t.integer :privilege_set_id
-      t.integer :change_number
+    create_table :cbac_staged_permissions do |t|
+      t.integer :pristine_role_id
+      t.string :privilege_set_name
+      t.integer :line_number
       t.string :comment
-      t.text :action, :limit => 2
+      t.text :operation, :limit => 2
+      t.timestamps
+    end
+
+    create_table :cbac_staged_roles do |t|
+      t.string :role_type
+      t.string :name
+      t.integer :role_id
       t.timestamps
     end
 
@@ -45,7 +52,8 @@ class CreateCbacFromScratch < ActiveRecord::Migration
     drop_table :cbac_generic_roles
     drop_table :cbac_memberships
     drop_table :cbac_privilege_set
-    drop_table :cbac_staged_changes
+    drop_table :cbac_staged_permissions
+    drop_table :cbac_staged_roles
     drop_table :cbac_known_permission
   end
 end
