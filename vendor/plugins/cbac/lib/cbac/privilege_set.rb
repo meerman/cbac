@@ -18,9 +18,11 @@ class Cbac::PrivilegeSet
       @sets = Hash.new if @sets.nil?
       # check for double creation
       raise ArgumentError, "CBAC: PrivilegeSet was already defined: #{symbol.to_s}" if @sets.include?(symbol)
-      # Create record if privilegeset Cdoesn't exist
-      Cbac::PrivilegeSetRecord.create(:name => symbol.to_s, :comment => comment) if Cbac::PrivilegeSetRecord.find(:first, :conditions => ["name = ?", symbol.to_s]).nil?
-      record = Cbac::PrivilegeSetRecord.find(:first, :conditions => ["name = ?", symbol.to_s])
+      # Create record if privilege set doesn't exist
+      record = Cbac::PrivilegeSetRecord.find_or_create_by_name(symbol.to_s)
+      record.set_comment(comment)
+      record.save
+
       @sets[symbol] = record
     end
   end
