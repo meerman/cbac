@@ -86,7 +86,8 @@ module Cbac
 
     def delete_generic_permissions
       permissions = Cbac::Permission.find(:all, :conditions => {:context_role => nil})
-      (permissions.select { |perm| perm.generic_role.name != "administrators" }).each { |p| p.destroy }
+      # for backwards compatibility, generic_role name was administrators instead of administrator
+      (permissions.select { |perm| perm.generic_role.name != "administrator" and perm.generic_role.name != "administrators" }).each { |p| p.destroy }
     end
 
     def delete_non_generic_staged_permissions

@@ -4,6 +4,6 @@
 
 one:
   id: 1
-  name: administrators
+  name: administrator
   remarks: Administrators role. Grants full access to the entire system.
 

@@ -89,7 +89,7 @@
       end
 
       puts "Creating Generic Role: administrators"
-      admin_role = Cbac::GenericRole.new(:name => "administrators", :remarks => "System administrators - may edit CBAC permissions")
+      admin_role = Cbac::GenericRole.new(:name => "administrator", :remarks => "System administrators - may edit CBAC permissions")
       throw "Failed to save new Generic Role" unless admin_role.save
 
       puts "Creating Administrator Membership for user #{adminuser}"

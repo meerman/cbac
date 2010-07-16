@@ -81,7 +81,7 @@ describe "CbacPristineFile" do
 
   describe "parse the role from a pristine line" do
     it "should return the admin role if the role is Admin()" do
-      admin_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:admin], :name => 'administrators')
+      admin_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:admin], :name => 'administrator')
       PristineRole.stub!(:admin_role).and_return(admin_role)
       line = "0:+:PrivilegeSet(chat)Admin()"
 
