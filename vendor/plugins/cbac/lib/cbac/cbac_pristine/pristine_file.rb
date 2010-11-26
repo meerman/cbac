@@ -137,6 +137,7 @@ module Cbac
           if context_role.nil? 
             # this is a never-before-seen context role
             context_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:context], :name => context_role_name.captures[0]) if context_role.nil?
+            context_role.save if use_db
             @context_roles.push context_role
           end
           return context_role
