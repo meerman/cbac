@@ -1,8 +1,0 @@
-log/*.log
-db/*.sqlite3
-vendor/plugins/cbac/pkg/*
-vendor/plugins/cbac/Manifest
-vendor/plugins/cbac/cbac.gemspec
-vendor/plugins/cbac/cbac-*.gem
-tmp
-nbproject

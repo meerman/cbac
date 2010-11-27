@@ -3,7 +3,7 @@
 ## YAML template for the generic roles
 
 one:
-    id: 1
-    name: administrators
-    remarks: Administrators role. Grants full access to the entire system.
+  id: 1
+  name: administrator
+  remarks: Administrators role. Grants full access to the entire system.
 

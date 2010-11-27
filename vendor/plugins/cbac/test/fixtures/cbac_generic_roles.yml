@@ -1,9 +1,0 @@
-###
-# Context 
-## YAML template for the generic roles
-
-one:
-  id: 1
-  name: administrator
-  remarks: Administrators role. Grants full access to the entire system.
-
