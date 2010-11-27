@@ -1,13 +1,12 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '../../../../test/test_helper'))
-require 'test/unit'
-require 'rubygems'
+# Copyright 2010 Bert Meerman
+require File.expand_path(File.join(File.dirname(__FILE__), 'test_helper'))
 
 ###
 # Tests the Cbac::PrivilegeSet class
 #
 class CbacPrivilegeSetTest <  ActiveSupport::TestCase
-  self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
-  fixtures :all
+  #self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
+  #fixtures :all
 
   # Adds a new privilege to the PrivilegeSet.
   # This test should add a new privilege and everything should be working.

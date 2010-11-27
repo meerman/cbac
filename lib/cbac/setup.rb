@@ -1,3 +1,4 @@
+
 module Cbac
   # Class performs various functions specific to the CBAC system itself. Most
   # important function is to check if the system is initialized; without proper

@@ -1,6 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '../../../../test/test_helper'))
-require 'test/unit'
-require 'rubygems'
+# Copyright 2010 Bert Meerman
+require File.expand_path(File.join(File.dirname(__FILE__), 'test_helper'))
 
 # ### Tests the Cbac::Privilege class
 #

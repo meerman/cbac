@@ -1,8 +1,22 @@
 # TODO: Check the permission table for double entries, ie: both an entry in the
 # generic_role_id field and an entry in the context_role field. Solution: solve
 # via model. Update model & add test
+require "cbac/setup"
+require "cbac/privilege_set_record"
+require "cbac/generic_role"
+require "cbac/membership"
+require "cbac/permission"
+require "cbac/privilege_new_api"
 
+# Configuration file
+require File.dirname(__FILE__) + '/cbac/config.rb'
 
+# The following code contains configuration options. You can turn them on for
+# gem development. For actual usage, it is advisable to set the configuration
+# options in the environment files.
+Cbac::Config.verbose = false
+
+# Module containing the bootstrap code
 module Cbac
   if Cbac::Setup.check
     puts "CBAC properly installed"
@@ -34,7 +48,7 @@ module Cbac
     # Check the given privilege_sets
     def check_privilege_sets(privilege_sets, context = {})
       # Check the generic roles
-      return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user_id, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
+      return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
       # Check the context roles Get the permissions
       privilege_sets.collect{|privilege_set|Cbac::Permission.find(:all, :conditions => ["privilege_set_id = ? AND generic_role_id = 0", privilege_set.id.to_s])}.flatten.each do |permission|
         puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilege_set.name}" if Cbac::Config.verbose
@@ -50,7 +64,7 @@ module Cbac
         end
       end
       # not authorized
-      puts "Not authorized for: #{controller_method}" if Cbac::Config.verbose
+      puts "Not authorized for: #{privilege_sets.to_s}" if Cbac::Config.verbose
       false
     end
 

@@ -6,7 +6,7 @@
 
 module Cbac
   # Starts a privileges and privilegeset declaration block
-  def privileges(&block)
+  def cbac(&block)
     # Defines a new privilegeset
     def set(name, description, &block)
 

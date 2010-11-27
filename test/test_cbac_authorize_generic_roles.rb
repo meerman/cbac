@@ -1,6 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '../../../../test/test_helper'))
-require 'test/unit'
-require 'rubygems'
+# Copyright 2010 Bert Meerman
+require File.expand_path(File.join(File.dirname(__FILE__), 'test_helper'))
 
 # Dummy code for overriding the default current_user behavior
 module Cbac
@@ -13,8 +12,8 @@ end
 # Tests the Cbac system for authorization with generic roles
 #
 class CbacAuthorizeGenericRolesTest <  ActiveSupport::TestCase
-  self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
-  fixtures :all
+  #self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
+  #fixtures :all
 
   # Setup defines the PrivilegeSet that is being used by all PrivilegeTest methods
   def setup

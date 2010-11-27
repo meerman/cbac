@@ -1,6 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '../../../../test/test_helper'))
-require 'test/unit'
-require 'rubygems'
+# Copyright 2010 Bert Meerman
+require File.expand_path(File.join(File.dirname(__FILE__), 'test_helper'))
 
 # Dummy code for overriding the default current_user behavior
 module Cbac
@@ -15,8 +14,8 @@ end
 class CbacAuthorizeContextRolesTest <  ActiveSupport::TestCase
   include Cbac
   
-  self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
-  fixtures :all
+  #self.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
+  #fixtures :all
   attr_accessor :authorize_context_eval_string
   attr_accessor :session
 

@@ -1,4 +1,5 @@
 # Copyright 2010 Bert Meerman
+require File.expand_path(File.join(File.dirname(__FILE__), 'test_helper'))
 
 ########
 # Test the actions
@@ -8,7 +9,7 @@ class CbacActionsTest < ActiveSupport::TestCase
   # Adding actions using a simple get or post command
   def test_add_simple_action
     cbac do
-      set :cbac_actions_test do
+      set :test_add_simple_action, "test_add_simple_action"  do
         post :foo, :bar
         get :foo, :bar
       end
@@ -18,7 +19,7 @@ class CbacActionsTest < ActiveSupport::TestCase
   # Adding multiple methods with a single call
   def test_add_multiple_methods
     cbac do
-      set :cbac_actions_test do
+      set :test_add_multiple_methods, "test_add_multiple_methods"  do
         post :foo, [:bar, :bar2]
         get :foo, [:bar, :bar2]
       end
@@ -28,7 +29,7 @@ class CbacActionsTest < ActiveSupport::TestCase
   # Add methods with single parameter
   def test_add_method_with_single_parameter
     cbac do
-      set :cbac_actions_test do
+      set :test_add_method_with_single_parameter, "test_add_method_with_single_parameter"  do
         post :foo, :bar, :foobar
         get :foo, :bar, :foobar
       end
@@ -38,7 +39,7 @@ class CbacActionsTest < ActiveSupport::TestCase
   # Add methods with multiple parameters
   def test_add_method_with_multiple_parameter
     cbac do
-      set :cbac_actions_test do
+      set :test_add_method_with_multiple_parameter, "test_add_method_with_multiple_parameter" do
         post :foo, :bar, [:foobar, :foobar2]
         get :foo, :bar, [:foobar, :foobar2]
       end
@@ -47,7 +48,7 @@ class CbacActionsTest < ActiveSupport::TestCase
 
   def test_add_method_with_parameter_mapping
     cbac do
-      set :cbac_actions_test do
+      set :test_add_method_with_parameter_mapping, "test_add_method_with_parameter_mapping"  do
         post :foo, :bar, :foobar, {:map => :me}
         get :foo, :bar, :foobar, {:map => :me}
       end
@@ -58,7 +59,7 @@ class CbacActionsTest < ActiveSupport::TestCase
   # specifications (parameters are /always/ identifiers
   def test_warning_on_adding_method_with_identifier
     cbac do
-      set :cbac_actions_test do
+      set :test_warning_on_adding_method_with_identifier, "test_warning_on_adding_method_with_identifier"  do
         post :foo, :bar, :foobar_id
         get :foo, :bar, :foobar_id
         post :foo, :bar, [:foobar, :foobar2_id]
