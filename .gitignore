@@ -1,4 +1,4 @@
 nbproject
 pkg
-db/*.sqlite3
+test/db/*.sqlite3
 
