@@ -1,5 +1,8 @@
+Manifest
 README.rdoc
 Rakefile
+config/cbac/context_roles.rb
+config/cbac/privileges.rb
 generators/cbac/USAGE
 generators/cbac/cbac_generator.rb
 generators/cbac/templates/config/cbac.pristine
@@ -42,6 +45,7 @@ lib/cbac/privilege_set.rb
 lib/cbac/privilege_set_record.rb
 lib/cbac/setup.rb
 nbproject/private/private.properties
+nbproject/private/rake-d.txt
 nbproject/project.properties
 nbproject/project.xml
 spec/cbac_pristine_file_spec.rb
@@ -51,6 +55,7 @@ spec/rcov.opts
 spec/spec.opts
 spec/spec_helper.rb
 tasks/cbac.rake
+test/db/test.sqlite3
 test/fixtures/cbac_generic_roles.yml
 test/fixtures/cbac_memberships.yml
 test/fixtures/cbac_permissions.yml
@@ -61,4 +66,4 @@ test/test_cbac_authorize_generic_roles.rb
 test/test_cbac_context_role.rb
 test/test_cbac_privilege.rb
 test/test_cbac_privilege_set.rb
-Manifest
+test/test_helper.rb

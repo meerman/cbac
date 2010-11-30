@@ -2,14 +2,20 @@
 # generic_role_id field and an entry in the context_role field. Solution: solve
 # via model. Update model & add test
 require "cbac/setup"
-require "cbac/privilege_set_record"
+require "cbac/config"
+require "cbac/context_role"
 require "cbac/generic_role"
+require "cbac/known_permission"
 require "cbac/membership"
 require "cbac/permission"
+require "cbac/privilege"
 require "cbac/privilege_new_api"
-
-# Configuration file
-require File.dirname(__FILE__) + '/cbac/config.rb'
+require "cbac/privilege_set"
+require "cbac/privilege_set_record"
+require "cbac/cbac_pristine/pristine"
+require "cbac/cbac_pristine/pristine_file"
+require "cbac/cbac_pristine/pristine_permission"
+require "cbac/cbac_pristine/pristine_role"
 
 # The following code contains configuration options. You can turn them on for
 # gem development. For actual usage, it is advisable to set the configuration
