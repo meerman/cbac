@@ -65,6 +65,9 @@ class CbacGenerator < Rails::Generators::Base
     copy_file "fixtures/cbac_generic_roles.yml", "test/fixtures/cbac_generic_roles.yml"
     copy_file "fixtures/cbac_memberships.yml", "test/fixtures/cbac_memberships.yml"
 
+    # initializer
+    copy_file "initializers/cbac_config.rb", "config/initializers/cbac_config.rb"
+
     # Rake task
     empty_directory "lib/tasks"
     copy_file "tasks/cbac.rake", "lib/tasks/cbac.rake"

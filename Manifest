@@ -33,6 +33,7 @@ lib/generators/cbac/copy_files/controllers/upgrade_controller.rb
 lib/generators/cbac/copy_files/fixtures/cbac_generic_roles.yml
 lib/generators/cbac/copy_files/fixtures/cbac_memberships.yml
 lib/generators/cbac/copy_files/fixtures/cbac_permissions.yml
+lib/generators/cbac/copy_files/initializers/cbac_config.rb
 lib/generators/cbac/copy_files/migrate/create_cbac_from_scratch.rb
 lib/generators/cbac/copy_files/migrate/create_cbac_upgrade_path.rb
 lib/generators/cbac/copy_files/stylesheets/cbac.css

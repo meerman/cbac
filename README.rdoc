@@ -3,6 +3,9 @@
 == DESCRIPTION:
 Easy to use, light-weight authorization system for Rails applications.
 
+== Update
+Version 0.6 contains a few major updates on the system. This is driven by the
+feature to be compliant with Rails 3
 
 == FEATURES:
 - Authorize users via roles/ groups
