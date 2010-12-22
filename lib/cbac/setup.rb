@@ -9,7 +9,13 @@ module Cbac
       # Check to see if the tables are correctly migrated. If the tables are not
       # migrated, CBAC should terminate immediately.
       def check_tables
-        return false unless Cbac::PrivilegeSetRecord.table_exists?
+        # It is possible that there is no database connection yet. In that case, the table_exist call will fail
+        begin
+          return false unless Cbac::PrivilegeSetRecord.table_exists?
+        rescue ActiveRecord::ConnectionNotEstablished
+          puts "CBAC: Connection to database not established when initializing Cbac. Cbac is *not* running."
+          return false
+        end
         return false unless Cbac::GenericRole.table_exists?
         return false unless Cbac::Membership.table_exists?
         return false unless Cbac::Permission.table_exists?
