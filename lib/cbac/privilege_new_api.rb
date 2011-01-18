@@ -19,7 +19,7 @@ module Cbac
       end
 
       # Adds a get declaration
-      def get(controller, *method)
+      def get(controller, *methods)
         raise "Cannot add privilege without a set" unless @current_set_name
         methods.each {|method|
           Privilege.resource @current_set_name, controller.to_s + "/" + method.to_s, :get

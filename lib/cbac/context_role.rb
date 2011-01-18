@@ -15,7 +15,7 @@ class ContextRole
     def add(symbol, context_rule = "", &block)
       symbol = symbol.to_sym
       @roles = Hash.new if @roles.nil?
-      raise ArgumentError, "CBAC: ContextRole was already defined" if @roles.keys.include?(symbol)
+      raise ArgumentError, "CBAC: ContextRole was already defined:" + symbol.to_s if @roles.keys.include?(symbol)
       # TODO following code
       #raise ArgumentError, "CBAC: cannot specify both string rule and block rule" unless context_rule.nil? and block.nil?
       # TODO context parameter in block statement is not explicitly tested

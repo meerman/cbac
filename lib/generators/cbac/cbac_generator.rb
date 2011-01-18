@@ -53,12 +53,12 @@ class CbacGenerator < Rails::Generators::Base
 
     # migrations
     #puts "type of m: " + class.name
-    if self.class.migration_exists?("#{RAILS_ROOT}/db/migrate", "create_cbac")
+    if self.class.migration_exists?("#{::Rails.root.to_s}/db/migrate", "create_cbac")
       # This is an upgrade from a previous version of CBAC
-      migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate/create_cbac_upgrade_path" unless self.class.migration_exists?("#{RAILS_ROOT}/db/migrate", "create_cbac_upgrade_path")
+      migration_template "migrate/create_cbac_upgrade_path.rb", "db/migrate/create_cbac_upgrade_path" unless self.class.migration_exists?("#{::Rails.root.to_s}/db/migrate", "create_cbac_upgrade_path")
     else
       # This is the first install of CBAC into the current project
-      migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate/create_cbac_from_scratch" unless self.class.migration_exists?("#{RAILS_ROOT}/db/migrate", "create_cbac_from_scratch")
+      migration_template "migrate/create_cbac_from_scratch.rb", "db/migrate/create_cbac_from_scratch" unless self.class.migration_exists?("#{::Rails.root.to_s}/db/migrate", "create_cbac_from_scratch")
     end
     # default fixtures
     copy_file "fixtures/cbac_permissions.yml", "test/fixtures/cbac_permissions.yml"

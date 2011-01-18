@@ -35,7 +35,7 @@ class Privilege
         (@post_resources[method] ||= Array.new) << PrivilegeSet.sets[privilege_set]
         (@includes[privilege_set] || Array.new).each {|child_set| (@post_resources[method] ||= Array.new) << PrivilegeSet.sets[child_set]} unless @includes.nil?
       else
-        raise "This should never happen"
+        raise "CBAC: This should never happen (incorrect HTTP action)"
       end
     end
 
@@ -108,7 +108,8 @@ class Privilege
             raise "CBAC: PrivilegeSets only exist for other action: get on method: #{controller_method}"
           end
         end
-        raise "CBAC: Could not find any privilege sets associated with: #{controller_method} and action: #{action_type}"
+        raise "CBAC: Could not find any privilege sets associated with: #{controller_method} and action: #{action_type}" +
+          "Available GET resources:\n" + Privilege.get_resources.inject("") {|sum, (key, value)| sum + key.to_s + "\n"}
       end
       privilege_sets
     end
