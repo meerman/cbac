@@ -9,6 +9,7 @@
     </tr>
     <% (@users.sort do |x,y| x.name.downcase <=> y.name.downcase end).each do |u| %>
       <tr>
+<%- # TODO: documentation must contain something on users having the 'name' method/ field %>
         <td><%= u.name %></td>
         <% @generic_roles.each do |generic_role| %>
           <td class="checked">

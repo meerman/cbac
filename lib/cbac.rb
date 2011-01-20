@@ -74,7 +74,7 @@ module Cbac
 
       # Code that performs authorization
       def authorize
-        authorization_check(params[:controller], params[:action], request.request_method.downcase) || unauthorized
+        authorization_check(params[:controller], params[:action], request.request_method.downcase, self) || unauthorized
       end
 
       # Default unauthorized method Override this method to supply your own code

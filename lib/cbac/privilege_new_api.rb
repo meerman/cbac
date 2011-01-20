@@ -14,7 +14,7 @@ module Cbac
       def post(controller, *methods)
         raise "Cannot add privilege without a set" unless @current_set_name
         methods.each {|method|
-          Privilege.resource @current_set_name, controller.to_s + "/" + method.to_s, :post
+          Privilege.resource @current_set_name, @cbac_namespace.to_s + controller.to_s + "/" + method.to_s, :post
         }
       end
 
@@ -22,7 +22,7 @@ module Cbac
       def get(controller, *methods)
         raise "Cannot add privilege without a set" unless @current_set_name
         methods.each {|method|
-          Privilege.resource @current_set_name, controller.to_s + "/" + method.to_s, :get
+          Privilege.resource @current_set_name, @cbac_namespace.to_s + controller.to_s + "/" + method.to_s, :get
         }
       end
 

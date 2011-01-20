@@ -1,6 +1,6 @@
 <% update_name = "cr__" + context_role.to_s + "__" + set_id.to_s %>
 <% unless update_partial %><div id="<%= update_name %>"><% end %>
-  <% remote_form_for "/cbac/permissions/update", :url => cbac_permissions_update_path,
+  <% form_for "/cbac/permissions/update", :remote => true, :url => cbac_permissions_update_path,
     :update => update_name, :before => "$('#{update_name}').style.visibility = 'hidden';",
     :complete => "$('#{update_name}').style.visibility = 'visible';" do %>
     <%= hidden_field_tag "context_role" + update_name, context_role.to_s, :name => "context_role" %>

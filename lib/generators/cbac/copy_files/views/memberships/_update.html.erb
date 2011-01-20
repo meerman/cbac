@@ -1,6 +1,6 @@
 <% update_name = generic_role.id.to_s + "__" + user_id.to_s %>
 <% unless update_partial %><div id="<%= update_name %>"><% end %>
-  <% remote_form_for "/cbac/memberships/update", :url => {:controller => "cbac/memberships", :action => "update"},
+  <% form_for "/cbac/memberships/update", :remote => true, :url => {:controller => "cbac/memberships", :action => "update"},
     :update => update_name, :before => "$('#{update_name}').style.visibility = 'hidden';",
     :complete => "$('#{update_name}').style.visibility = 'visible';" do %>
     <%= hidden_field_tag "generic_role_id" + update_name, generic_role.id.to_s, :name => "generic_role_id" %>

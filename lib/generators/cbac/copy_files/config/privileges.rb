@@ -3,28 +3,23 @@
 # Defines the privilegesets and privileges for the CBAC system
 #
 include Cbac
+puts "Loading privilegesets"
 
-# Defining privilegesets
-PrivilegeSet.add :cbac_administration, "Allows administration of CBAC modules"
+cbac do
+  set :public, "Stuff that is always accessible" do
+    # Insert public conroller/methods here
+  end
 
-# Defining privileges on controller methods (REST resources)
-Privilege.resource :cbac_administration, "cbac/permissions/index"
-Privilege.resource :cbac_administration, "cbac/permissions/create", :post
-Privilege.resource :cbac_administration, "cbac/memberships/index"
-Privilege.resource :cbac_administration, "cbac/memberships/create", :post
-Privilege.resource :cbac_administration, "cbac/generic_roles/index"
-Privilege.resource :cbac_administration, "cbac/generic_roles/update", :post
-Privilege.resource :cbac_administration, "cbac/generic_roles/create", :post
-Privilege.resource :cbac_administration, "cbac/generic_roles/delete", :post
-
-# model attributes
-#Privilege.model_attribute :blog_update, :blog, :author, :write
-#privilege.model_attribute :blog_update, :blog, :author, :w
-#privilege.model_attribute :blog_update, :blog, :author, :rw
-# Models
-# Enforcing mode
-#Privilege.model :blog_read, :blog, :load
-#Privilege.model :blog_create, :blog, :save
-#Privilege.model :blog_update, :blog, :update
-#Privilege.model :blog_update, :blog, :delete
-
+  set :cbac_administration, "Allows administration of CBAC modules" do
+    in_module :cbac do
+      get "permissions", :index
+      post "permissions", :create
+      get "memberships", :index
+      post "memberships", :create
+      get "generic_roles", :index
+      post "generic_roles", :update, :create, :delete
+      get "upgrade", :index
+      post "upgrade", :update
+    end
+  end
+end
