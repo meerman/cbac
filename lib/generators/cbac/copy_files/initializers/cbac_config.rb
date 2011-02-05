@@ -1,2 +1,4 @@
-puts "Initializing Cbac"
-Cbac::Setup.check
+puts "Initializing CBAC..."
+include Cbac
+Cbac::cbac_boot!
+puts "CBAC initialized"
