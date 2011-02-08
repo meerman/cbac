@@ -28,7 +28,7 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
 end
 
 # Echo information for packaging
-Echoe.new('cbac', '0.6.0') do |p|
+Echoe.new('cbac', '0.6.1') do |p|
   p.summary        = "CBAC - Simple authorization system for Rails applications."
   p.description    = "Simple authorization system for Rails applications. Allows you to develop applications with a mixed role based authorization and a context based authorization model. Does not supply authentication."
   p.url            = "http://cbac.rubyforge.org"
