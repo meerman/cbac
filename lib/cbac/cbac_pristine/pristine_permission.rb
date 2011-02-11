@@ -143,7 +143,7 @@ module Cbac
 
       # register this permission as a known permission
       def register_change
-        pristine_file.parse(true) if pristine_file.permissions.empty?
+        pristine_file.parse(true) unless pristine_file.permissions.present?
         line_numbers = [line_number]
 
         pristine_file.permissions.each do |permission|

@@ -12,11 +12,12 @@ module Cbac
         @generic_roles = []
         @context_roles = []
         @permissions = []
-        @admin_role = nil
       end
 
       def parse(use_db = true)
-        @permissions = Array.new
+        @generic_roles = []
+        @context_roles = []
+        @permissions = []
 
         f = File.open(file_name, "r")
         last_row_number = -1
