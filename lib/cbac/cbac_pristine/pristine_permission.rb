@@ -8,6 +8,7 @@ module Cbac
       set_table_name 'cbac_staged_permissions'
 
       belongs_to :pristine_role, :class_name => "Cbac::CbacPristine::PristineRole"
+      belongs_to :pristine_file, :class_name => "Cbac::CbacPristine::AbstractPristineFile"
 
       def privilege_set
         Cbac::PrivilegeSetRecord.first(:conditions => {:name => privilege_set_name})
@@ -142,7 +143,17 @@ module Cbac
 
       # register this permission as a known permission
       def register_change
-        Cbac::KnownPermission.create(:permission_number => line_number, :permission_type => pristine_role.known_permission_type)
+        pristine_file.parse(true) if pristine_file.permissions.empty?
+        line_numbers = [line_number]
+
+        pristine_file.permissions.each do |permission|
+          line_numbers.push(permission.line_number) if permission.privilege_set_name == self.privilege_set_name && permission.pristine_role_id = self.pristine_role_id && permission.line_number < self.line_number
+        end
+
+        line_numbers.each do |number|
+          Cbac::KnownPermission.create(:permission_number => number, :permission_type => pristine_role.known_permission_type) if Cbac::KnownPermission.count(:conditions => {:permission_number => number, :permission_type => pristine_role.known_permission_type}) == 0
+        end
+
       end
 
       # add this permission to the staging area

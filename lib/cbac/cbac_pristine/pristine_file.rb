@@ -3,11 +3,12 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'pristine_permission'
 
 module Cbac
   module CbacPristine
-    class AbstractPristineFile
-      attr_accessor :file_name, :permissions, :generic_roles
+    class AbstractPristineFile < ActiveRecord::Base
+      set_table_name "cbac_pristine_files"
+      attr_accessor :permissions, :generic_roles
 
-      def initialize(file_name)
-        @file_name = file_name
+      def initialize(*args)
+        super(*args)
         @generic_roles = []
         @context_roles = []
         @permissions = []
@@ -17,10 +18,11 @@ module Cbac
       def parse(use_db = true)
         @permissions = Array.new
 
-        f = File.open(@file_name, "r")
+        f = File.open(file_name, "r")
         last_row_number = -1
         f.each_with_index do |l, line_number|
           pristine_permission = PristinePermission.new
+          pristine_permission.pristine_file = self
           permission_line = l.chomp
           # if this is not a line we can convert into a permission, go to next line (or fail.....)
           next unless is_pristine_permission_line?(permission_line, line_number)

@@ -204,7 +204,7 @@ EOF
       end
       filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
       puts "Parsing pristine file #{filename}"
-      pristine_file = adapter.create_pristine_file(filename)
+      pristine_file = adapter.find_or_create_pristine_file(filename)
       adapter.set_pristine_state([pristine_file], true)
       puts "Applied #{pristine_file.permissions.length.to_s} permissions."
       puts "Task cbac:pristine finished."
@@ -233,7 +233,7 @@ EOF
 
       filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
       puts "Parsing pristine file #{filename}"
-      pristine_file = adapter.create_generic_pristine_file(filename)
+      pristine_file = adapter.find_or_create_generic_pristine_file(filename)
       adapter.set_pristine_state([pristine_file], false)
       puts "Applied #{pristine_file.permissions.length.to_s} permissions."
       puts "Task cbac:pristine_generic finished."
@@ -260,8 +260,8 @@ EOF
       filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
       generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
       puts "Parsing pristine file #{filename} and generic pristine file #{generic_filename}"
-      pristine_file = adapter.create_pristine_file(filename)
-      generic_pristine_file = adapter.create_generic_pristine_file(generic_filename)
+      pristine_file = adapter.find_or_create_pristine_file(filename)
+      generic_pristine_file = adapter.find_or_create_generic_pristine_file(generic_filename)
       adapter.set_pristine_state([pristine_file, generic_pristine_file], true)
       puts "Applied #{pristine_file.permissions.length.to_s} permissions and #{generic_pristine_file.permissions.length.to_s} generic permissions."
       puts "Task cbac:pristine_all finished."
@@ -281,7 +281,7 @@ EOF
       filename = ENV['PRISTINE_FILE'] || "config/cbac/cbac.pristine"
       puts "Parsing pristine file #{filename}"
 
-      pristine_file = adapter.create_pristine_file(filename)
+      pristine_file = adapter.find_or_create_pristine_file(filename)
       adapter.delete_non_generic_staged_permissions
       puts "Deleted all staged context and administrator permissions"
 
@@ -305,7 +305,7 @@ EOF
       generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
 
       puts "Parsing pristine file #{generic_filename}"
-      generic_pristine_file = adapter.create_generic_pristine_file(generic_filename)
+      generic_pristine_file = adapter.find_or_create_generic_pristine_file(generic_filename)
 
       adapter.delete_non_generic_staged_permissions
       puts "Deleted all staged generic permissions"
@@ -330,8 +330,8 @@ EOF
       generic_filename = ENV['GENERIC_PRISTINE_FILE'] || "config/cbac/cbac_generic.pristine"
       puts "Parsing pristine file #{filename} and generic pristine file #{generic_filename}"
 
-      pristine_file = adapter.create_pristine_file(filename)
-      generic_pristine_file = adapter.create_generic_pristine_file(generic_filename)
+      pristine_file = adapter.find_or_create_pristine_file(filename)
+      generic_pristine_file = adapter.find_or_create_generic_pristine_file(generic_filename)
 
       adapter.delete_generic_staged_permissions
       adapter.delete_non_generic_staged_permissions

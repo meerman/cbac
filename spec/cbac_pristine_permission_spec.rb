@@ -1,9 +1,9 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
 require 'spec'
-require 'cbac/cbac_pristine/pristine'
-require 'cbac/cbac_pristine/pristine_role'
-require 'cbac/cbac_pristine/pristine_permission'
+require '../lib/cbac/cbac_pristine/pristine'
+require '../lib/cbac/cbac_pristine/pristine_role'
+require '../lib/cbac/cbac_pristine/pristine_permission'
 
 include Cbac::CbacPristine
 

@@ -75,6 +75,7 @@ module Cbac
       Cbac::Membership.delete_all
       Cbac::Permission.delete_all
       Cbac::KnownPermission.delete_all
+      Cbac::CbacPristine::PristineFile.delete_all
       Cbac::CbacPristine::PristinePermission.delete_all
       Cbac::CbacPristine::PristineRole.delete_all
     end
@@ -100,15 +101,17 @@ module Cbac
     end
 
     def database_contains_cbac_data?
-      return (Cbac::GenericRole.count != 0 or Cbac::Membership.count != 0 or Cbac::Permission.count != 0 or Cbac::KnownPermission.count != 0 or Cbac::CbacPristine::PristinePermission.count != 0 or Cbac::CbacPristine::PristineRole.count != 0)
+      (Cbac::GenericRole.count != 0 or Cbac::Membership.count != 0 or Cbac::Permission.count != 0 or Cbac::KnownPermission.count != 0 or Cbac::CbacPristine::PristinePermission.count != 0 or Cbac::CbacPristine::PristineRole.count != 0)
     end
 
-    def create_generic_pristine_file(file_name)
-       GenericPristineFile.new(file_name)      
+    def find_or_create_generic_pristine_file(file_name)
+      pristine_file = GenericPristineFile.find_by_file_name(file_name)
+      pristine_file.present? ? pristine_file : GenericPristineFile.create(:file_name => file_name)
     end
 
-    def create_pristine_file(file_name)
-       PristineFile.new(file_name)
+    def find_or_create_pristine_file(file_name)
+      pristine_file = PristineFile.find_by_file_name(file_name)
+      pristine_file.present? ? pristine_file : PristineFile.create(:file_name => file_name)
     end
 
     def number_of_generic_staged_permissions

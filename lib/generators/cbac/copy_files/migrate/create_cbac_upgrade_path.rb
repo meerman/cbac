@@ -1,8 +1,15 @@
 class CreateCbacUpgradePath < ActiveRecord::Migration
   def self.up
 
+    create_table :cbac_pristine_files do |t|
+      t.string :type
+      t.string :file_name
+      t.timestamps
+    end
+
     create_table :cbac_staged_permissions do |t|
       t.integer :pristine_role_id
+      t.integer :pristine_file_id
       t.string :privilege_set_name
       t.integer :line_number
       t.string :comment
@@ -21,9 +28,11 @@ class CreateCbacUpgradePath < ActiveRecord::Migration
       t.integer :permission_number, :null => :no
       t.integer :permission_type, :default => 0
     end
+
   end
 
   def self.down
+    drop_table :cbac_pristine_files
     drop_table :cbac_staged_permissions
     drop_table :cbac_staged_roles
     drop_table :cbac_known_permissions
