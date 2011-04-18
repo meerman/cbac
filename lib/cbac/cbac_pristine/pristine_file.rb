@@ -6,6 +6,7 @@ module Cbac
     class AbstractPristineFile < ActiveRecord::Base
       set_table_name "cbac_pristine_files"
       attr_accessor :permissions, :generic_roles
+      attr_readonly :file_name
 
       def initialize(*args)
         super(*args)
@@ -162,7 +163,12 @@ module Cbac
             end
           end
           role = use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]}) : nil
-          role =  PristineRole.new(:role_id => @generic_roles.length + 2, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]) if role.nil?
+
+          if role.nil?
+            role =  PristineRole.new(:role_id => @generic_roles.length + 2, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0])
+            role.save if use_db
+          end
+
           @generic_roles.push(role)
           return role
         end
