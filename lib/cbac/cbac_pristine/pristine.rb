@@ -9,7 +9,7 @@ module Cbac
 
       pristine_files.each do |pristine_file|
         #if the pristine file wasn't parsed yet, we'll do it here
-        pristine_file.parse(false) if pristine_file.permissions.empty?
+        pristine_file.parse(false) if pristine_file.permissions.nil? || pristine_file.permissions.empty?
         pristine_file.generic_roles.each do |generic_role|
           # we only want the unique generic roles, because the yml file cannot have duplicates
           has_role = false
@@ -29,7 +29,7 @@ module Cbac
       permissions = []
 
       pristine_files.each do |pristine_file|
-        pristine_file.parse(false) if pristine_file.permissions.empty?
+        pristine_file.parse(false) if pristine_file.permissions.nil? || pristine_file.permissions.empty?
         pristine_file.permission_set.each do |line|
           permissions.push(line)
         end
@@ -52,7 +52,7 @@ module Cbac
     def set_pristine_state(pristine_files, clear_tables)
       clear_cbac_tables if clear_tables
       pristine_files.each do |pristine_file|
-        pristine_file.parse if pristine_file.permissions.empty?
+        pristine_file.parse if pristine_file.permissions.nil? || pristine_file.permissions.empty?
         pristine_file.permissions.each do |permission|
           permission.accept
         end
@@ -63,7 +63,7 @@ module Cbac
     def stage_permissions(pristine_files)
 
       pristine_files.each do |pristine_file|
-        pristine_file.parse(true) if pristine_file.permissions.empty?
+        pristine_file.parse(true) if pristine_file.permissions.nil? || pristine_file.permissions.empty?
         pristine_file.permissions.each do |permission|
           permission.stage
         end
