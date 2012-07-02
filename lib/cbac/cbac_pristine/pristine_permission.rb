@@ -147,7 +147,7 @@ module Cbac
         line_numbers = [line_number]
 
         pristine_file.permissions.each do |permission|
-          line_numbers.push(permission.line_number) if permission.privilege_set_name == self.privilege_set_name && permission.pristine_role_id = self.pristine_role_id && permission.line_number < self.line_number
+          line_numbers.push(permission.line_number) if permission.privilege_set_name == self.privilege_set_name && permission.pristine_role_id == self.pristine_role_id && permission.line_number < self.line_number
         end
 
         line_numbers.each do |number|
