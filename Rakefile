@@ -4,6 +4,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'echoe'
+require 'cbac/version'
 
 # Setting default task
 desc 'Default: run unit tests.'
@@ -28,12 +29,13 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
 end
 
 # Echo information for packaging
-Echoe.new('cbac', '0.6.1') do |p|
+Echoe.new('cbac', Cbac::VERSION) do |p|
   p.summary        = "CBAC - Simple authorization system for Rails applications."
   p.description    = "Simple authorization system for Rails applications. Allows you to develop applications with a mixed role based authorization and a context based authorization model. Does not supply authentication."
   p.url            = "http://cbac.rubyforge.org"
   p.author         = "Bert Meerman"
   p.email          = "bertm@rubyforge.org"
   p.ignore_pattern = []
+  p.retain_gemspec = true
   p.development_dependencies = []
 end
