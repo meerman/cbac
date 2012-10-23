@@ -1,3 +1,5 @@
+Gemfile
+Gemfile.lock
 Manifest
 README.rdoc
 Rakefile
@@ -46,11 +48,7 @@ lib/generators/cbac/copy_files/views/permissions/_update_context_role.html.erb
 lib/generators/cbac/copy_files/views/permissions/_update_generic_role.html.erb
 lib/generators/cbac/copy_files/views/permissions/index.html.erb
 lib/generators/cbac/copy_files/views/upgrade/index.html.erb
-nbproject/private/private.properties
-nbproject/private/private.xml
-nbproject/private/rake-d.txt
-nbproject/project.properties
-nbproject/project.xml
+migrations/20110211105533_add_pristine_files_to_cbac_upgrade_path.rb
 privileges.rb
 rails/init.rb
 spec/cbac_pristine_file_spec.rb
@@ -60,7 +58,6 @@ spec/rcov.opts
 spec/spec.opts
 spec/spec_helper.rb
 tasks/cbac.rake
-test/db/test.sqlite3
 test/fixtures/cbac_generic_roles.yml
 test/fixtures/cbac_memberships.yml
 test/fixtures/cbac_permissions.yml
