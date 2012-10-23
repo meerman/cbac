@@ -5,7 +5,7 @@ require 'active_record'
 module Cbac
   module CbacPristine
     class PristinePermission < ActiveRecord::Base
-      set_table_name 'cbac_staged_permissions'
+      self.table_name = 'cbac_staged_permissions'
 
       belongs_to :pristine_role, :class_name => "Cbac::CbacPristine::PristineRole"
       belongs_to :pristine_file, :class_name => "Cbac::CbacPristine::AbstractPristineFile"

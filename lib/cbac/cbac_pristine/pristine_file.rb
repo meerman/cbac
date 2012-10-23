@@ -4,7 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'pristine_permission'
 module Cbac
   module CbacPristine
     class AbstractPristineFile < ActiveRecord::Base
-      set_table_name "cbac_pristine_files"
+      self.table_name = "cbac_pristine_files"
       attr_accessor :permissions, :generic_roles
       attr_readonly :file_name
 

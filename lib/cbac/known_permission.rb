@@ -1,5 +1,5 @@
 class Cbac::KnownPermission < ActiveRecord::Base
-  set_table_name "cbac_known_permissions"
+  self.table_name = "cbac_known_permissions"
   attr_readonly :permission_type, :permission_number
 
   cattr_accessor :PERMISSION_TYPES
