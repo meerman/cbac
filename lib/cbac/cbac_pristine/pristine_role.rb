@@ -2,7 +2,7 @@ require 'active_record'
 module Cbac
   module CbacPristine
     class PristineRole < ActiveRecord::Base
-      set_table_name "cbac_staged_roles"
+      self.table_name = "cbac_staged_roles"
       attr_readonly :role_type, :role_id, :name
 
       def self.ROLE_TYPES
