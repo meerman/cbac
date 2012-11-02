@@ -1,3 +1,5 @@
+require "active_record"
+
 # TODO: Check the permission table for double entries, ie: both an entry in the
 # generic_role_id field and an entry in the context_role field. Solution: solve
 # via model. Update model & add test
