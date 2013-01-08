@@ -1,6 +1,4 @@
-require 'spec'
-require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
-require 'cbac/cbac_pristine/pristine_role'
+require 'spec_helper'
 
 include Cbac::CbacPristine
 

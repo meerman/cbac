@@ -1,4 +1,4 @@
 nbproject
 pkg
-test/db/*.sqlite3
+spec/support/*.sqlite3
 
