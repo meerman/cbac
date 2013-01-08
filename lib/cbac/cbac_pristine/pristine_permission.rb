@@ -151,9 +151,8 @@ module Cbac
         end
 
         line_numbers.each do |number|
-          Cbac::KnownPermission.create(:permission_number => number, :permission_type => pristine_role.known_permission_type) if Cbac::KnownPermission.count(:conditions => {:permission_number => number, :permission_type => pristine_role.known_permission_type}) == 0
+          Cbac::KnownPermission.where(:permission_number => number, :permission_type => pristine_role.known_permission_type).first_or_create
         end
-
       end
 
       # add this permission to the staging area

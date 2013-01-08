@@ -3,7 +3,6 @@ require 'spec_helper'
 include Cbac::CbacPristine
 
 describe "CbacPristineRole" do
-
   describe "convert pristine role to a yml fixture" do
     it "should return an empty string if the pristine role is of type :context" do
       pristine_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:context], :name => "name is irrelevant")
@@ -18,7 +17,6 @@ describe "CbacPristineRole" do
         pristine_role.to_yml_fixture
       }.should raise_error(ArgumentError)
     end
-
 
     it "should return a yml string starting with cbac_generic_role_ " do
       pristine_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:generic], :name => "name is irrelevant")
@@ -76,8 +74,5 @@ describe "CbacPristineRole" do
       admin_role.id.should be_nil
     end
   end
-
-
-
 end
 

@@ -4,11 +4,10 @@ include Cbac::CbacPristine
 
 describe "CbacPristineFile" do
   before(:each) do
-      @pristine_file = PristineFile.new("cbac.pristine")
+    @pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
   end
 
   describe "indicate if a line looks like a pristine line" do
-    
     it "should indicate that a ruby style comment line is not a pristine line" do
       comment_line = "#this is a comment line in Ruby"
 
@@ -64,7 +63,7 @@ describe "CbacPristineFile" do
       privilege_set_name = "chat"
       line = "0:+:PrivilegeSet(#{privilege_set_name})Admin()"
 
-      @pristine_file.parse_privilege_set_name(line, 0).should == privilege_set_name      
+      @pristine_file.parse_privilege_set_name(line, 0).should == privilege_set_name
     end
 
     it "should fail if an invalid line is provided" do
@@ -138,7 +137,7 @@ describe "CbacPristineFile" do
 
 
     it "should return a generic role if a generic pristine file is used" do
-      @pristine_file = GenericPristineFile.new("cbac.pristine")
+      @pristine_file = GenericPristineFile.new(:file_name =>"cbac.pristine")
       line = "0:+:PrivilegeSet(chat)GenericRole(group_admins)"
 
       @pristine_file.parse_role(line, 0).role_type.should == PristineRole.ROLE_TYPES[:generic]
@@ -146,7 +145,7 @@ describe "CbacPristineFile" do
 
     it "should return an existing generic role if use_db is not specified" do
       generic_role_name = 'group_admins'
-      @pristine_file = GenericPristineFile.new("cbac.pristine")
+      @pristine_file = GenericPristineFile.new(:file_name =>"cbac.pristine")
       line = "0:+:PrivilegeSet(chat)GenericRole(#{generic_role_name})"
       existing_role = PristineRole.create(:role_id => 1, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role_name)
 
@@ -155,7 +154,7 @@ describe "CbacPristineFile" do
 
     it "should not use an existing role if use_db is set to false" do
       generic_role_name = 'group_admins'
-      @pristine_file = GenericPristineFile.new("cbac.pristine")
+      @pristine_file = GenericPristineFile.new(:file_name =>"cbac.pristine")
       line = "0:+:PrivilegeSet(chat)GenericRole(#{generic_role_name})"
       existing_role = PristineRole.create(:role_id => 1, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role_name)
 
@@ -163,7 +162,7 @@ describe "CbacPristineFile" do
     end
 
     it "should fail if an Admin role is used in a generic pristine file" do
-      @pristine_file = GenericPristineFile.new("cbac.pristine")
+      @pristine_file = GenericPristineFile.new(:file_name =>"cbac.pristine")
       line = "0:+:PrivilegeSet(chat)Admin()"
 
       proc{
@@ -172,7 +171,7 @@ describe "CbacPristineFile" do
     end
 
     it "should fail if an context role is used in a generic pristine file" do
-      @pristine_file = GenericPristineFile.new("cbac.pristine")
+      @pristine_file = GenericPristineFile.new(:file_name =>"cbac.pristine")
       line = "0:+:PrivilegeSet(chat)ContextRole(logged_in_user)"
 
       proc{
@@ -181,7 +180,7 @@ describe "CbacPristineFile" do
     end
 
     it "should fail if an invalid line is provided in a generic pristine file" do
-      @pristine_file = GenericPristineFile.new("cbac.pristine")
+      @pristine_file = GenericPristineFile.new(:file_name =>"cbac.pristine")
       line = "0:+:PrivilegeSet(toeteraars)"
 
       proc{
@@ -191,14 +190,13 @@ describe "CbacPristineFile" do
   end
 
   describe "parsing a cbac_pristine file" do
-
     it "should fail if a row number is used twice" do
       pristine_file_lines = ["0:+:PrivilegeSet(chat)ContextRole(logged_in_user)"]
       pristine_file_lines.push("0:+:PrivilegeSet(log_in)ContextRole(everybody)")
-      
+
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
 
       proc{
         pristine_file.parse
@@ -212,7 +210,7 @@ describe "CbacPristineFile" do
 
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
       pristine_file.parse
 
       pristine_file.permissions.length.should == pristine_file_lines.length
@@ -225,7 +223,7 @@ describe "CbacPristineFile" do
 
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
       pristine_file.parse
 
       pristine_file.permissions.length.should == 2
@@ -238,7 +236,7 @@ describe "CbacPristineFile" do
 
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
       pristine_file.parse
 
       pristine_file.permissions.length.should == 3
@@ -252,7 +250,7 @@ describe "CbacPristineFile" do
 
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
       proc{
         pristine_file.parse
       }.should raise_error(SyntaxError)
@@ -262,7 +260,7 @@ describe "CbacPristineFile" do
       pristine_file_lines = ["0:x:PrivilegeSet(chat)ContextRole(logged_in_user)"]
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
       proc{
         pristine_file.parse
       }.should raise_error(NotImplementedError)
@@ -272,7 +270,7 @@ describe "CbacPristineFile" do
       pristine_file_lines = ["0:=>:PrivilegeSet(chat)ContextRole(logged_in_user)"]
       File.stub!(:open).and_return(pristine_file_lines)
 
-      pristine_file = PristineFile.new("cbac.pristine")
+      pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
       proc{
         pristine_file.parse
       }.should raise_error(NotImplementedError)
@@ -283,7 +281,7 @@ describe "CbacPristineFile" do
     before(:each) do
       @context_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:context], :name => "logged_in_user")
       @admin_role = PristineRole.new(:role_id => 1, :role_type => PristineRole.ROLE_TYPES[:admin],:name => "administrator")
-      @pristine_file = PristineFile.new("cbac.pristine")
+      @pristine_file = PristineFile.new(:file_name =>"cbac.pristine")
     end
 
     it "should filter out the permissions which were revoked" do
@@ -320,7 +318,6 @@ describe "CbacPristineFile" do
       proc {
         @pristine_file.permission_set
       }.should raise_error(ArgumentError)
-
     end
   end
 end

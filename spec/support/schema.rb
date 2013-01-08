@@ -6,9 +6,11 @@ class Cbac::Schema
   def self.load
     print "Loading fresh database schema..."
 
+    connect!
     CreateCbacFromScratch.suppress_messages do
       CreateCbacFromScratch.up
     end
+    connect!
 
     puts "done"
   end
@@ -16,9 +18,13 @@ class Cbac::Schema
   def self.drop
     FileUtils.rm_rf(DATABASE_FILE)
   end
-end
 
-ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => Cbac::Schema::DATABASE_FILE
-)
+private
+  def self.connect!
+    ActiveRecord::Base.establish_connection(
+      :adapter => 'sqlite3',
+      :database => Cbac::Schema::DATABASE_FILE
+    )
+  end
+
+end

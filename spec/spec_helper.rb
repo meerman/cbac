@@ -15,6 +15,12 @@ DatabaseCleaner.strategy = :transaction
 RSpec.configure do |config|
   config.before(:suite) do
     Cbac::Schema.load
+
+    Cbac::Config.verbose = false
+
+    o = Object.new
+    o.send :extend, Cbac
+    o.cbac_boot!
   end
 
   config.after(:suite) do
