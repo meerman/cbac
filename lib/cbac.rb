@@ -29,13 +29,6 @@ module Cbac
   def cbac_boot!
     if Cbac::Setup.check
       puts "CBAC properly installed"
-   
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/privilege'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/privilege_set'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/context_role'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine_file'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine_permission'))
 
       # check performs a check to see if the user is allowed to access the given
       # resource. Example: authorization_check("BlogController", "index", :get)
@@ -57,7 +50,13 @@ module Cbac
       # Check the given privilege_sets
       def check_privilege_sets(privilege_sets, context = {})
         # Check the generic roles
-        return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
+        return true if privilege_sets.any? { |set|
+          Cbac::GenericRole.joins(:generic_role_members, :permissions).exists?(
+            'cbac_memberships.user_id'  => current_user,
+            'cbac_permissions.privilege_set_id' => set.id
+          )
+        }
+
         # Check the context roles Get the permissions
         privilege_sets.collect{|privilege_set|Cbac::Permission.find(:all, :conditions => ["privilege_set_id = ? AND generic_role_id = 0", privilege_set.id.to_s])}.flatten.each do |permission|
           puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilege_set.name}" if Cbac::Config.verbose

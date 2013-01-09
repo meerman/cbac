@@ -24,16 +24,16 @@ class Privilege
       @get_resources = Hash.new if @get_resources.nil?
       @post_resources = Hash.new if @post_resources.nil?
       action_aliases = {"GET" => ["GET", "get", "g","idempotent"], "POST" => ["POST", "post", "p"]}
-      raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{privilege_set}" unless PrivilegeSet.sets.include?(privilege_set)
+      raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{privilege_set}" unless Cbac::PrivilegeSet.sets.include?(privilege_set)
       action_option = action_aliases.find { |name, aliases| aliases.include?(action.to_s) }
       raise ArgumentError, "CBAC: Wrong value for argument 'action' in Privilege.resource: #{action}" if action_option.nil?
       case action_option[0]
       when "GET"
-        (@get_resources[method] ||= Array.new) << PrivilegeSet.sets[privilege_set]
-        (@includes[privilege_set] || Array.new).each {|child_set| (@get_resources[method] ||= Array.new) << PrivilegeSet.sets[child_set]} unless @includes.nil?
+        (@get_resources[method] ||= Array.new) << Cbac::PrivilegeSet.sets[privilege_set]
+        (@includes[privilege_set] || Array.new).each {|child_set| (@get_resources[method] ||= Array.new) << Cbac::PrivilegeSet.sets[child_set]} unless @includes.nil?
       when "POST"
-        (@post_resources[method] ||= Array.new) << PrivilegeSet.sets[privilege_set]
-        (@includes[privilege_set] || Array.new).each {|child_set| (@post_resources[method] ||= Array.new) << PrivilegeSet.sets[child_set]} unless @includes.nil?
+        (@post_resources[method] ||= Array.new) << Cbac::PrivilegeSet.sets[privilege_set]
+        (@includes[privilege_set] || Array.new).each {|child_set| (@post_resources[method] ||= Array.new) << Cbac::PrivilegeSet.sets[child_set]} unless @includes.nil?
       else
         raise "CBAC: This should never happen (incorrect HTTP action)"
       end
@@ -49,11 +49,11 @@ class Privilege
     def include(privilege_set, included_privilege_set)
       @includes = Hash.new if @includes.nil?
       child_set = privilege_set.to_sym
-      raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{child_set}" unless PrivilegeSet.sets.include?(child_set)
+      raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{child_set}" unless Cbac::PrivilegeSet.sets.include?(child_set)
       included_privilege_set = [included_privilege_set] unless included_privilege_set.is_a?(Enumerable)
       included_privilege_set.each do |base_set|
         # Check for existence of PrivilegeSet
-        raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{base_set}" unless PrivilegeSet.sets.include?(base_set)
+        raise ArgumentError, "CBAC: PrivilegeSet does not exist: #{base_set}" unless Cbac::PrivilegeSet.sets.include?(base_set)
         # Adds the references
         (@includes[base_set.to_sym] ||= Array.new) << child_set
         # Copies existing resources
@@ -81,7 +81,7 @@ class Privilege
     # Usage:
     # Privilege.select "my_controller/action", :get
     #
-    # Returns an array of PrivilegeSet objects
+    # Returns an array of Cbac::PrivilegeSet objects
     #
     # If incorrect values are given for action_type the method will raise an
     # ArgumentError. If the controller and action name are not found, an
