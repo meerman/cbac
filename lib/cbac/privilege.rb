@@ -65,7 +65,6 @@ class Privilege
         end
       end
     end
-      
 
     def model_attribute
 
@@ -88,7 +87,7 @@ class Privilege
     # exception is being raised.
     def select(controller_method, action_type)
       action_type = action_type.to_s
-      post_methods = ["post", "put", "delete"]
+      post_methods = ["post", "put", "delete", "patch"]
       if action_type == "get"
         privilege_sets = Privilege.get_resources[controller_method]
       else if post_methods.include?(action_type)

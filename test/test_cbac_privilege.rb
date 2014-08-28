@@ -99,18 +99,22 @@ class CbacPrivilegeTest <  ActiveSupport::TestCase
 
   # Test the Privilege.select method. This method accepts a controller method
   # string and an action type It returns the privilegesets that comply with this
-  # combination The actions post, put and delete are identical. This test aims
+  # combination The actions post, put, patch and delete are identical. This test aims
   # at testing this assumption.
   def test_select_correct
     Privilege.resource :cbac_privilege, "select/correct/get", :get
-    Privilege.resource :cbac_privilege, "select/correct/post", :post
-    Privilege.resource :cbac_privilege, "select/correct/put", :post
-    Privilege.resource :cbac_privilege, "select/correct/delete", :post
+    post_action_types = [:post, :put, :patch, :delete]
+
+    post_action_types.each do |action|
+      Privilege.resource :cbac_privilege, "select/correct/#{action}", :post
+    end
+
     assert_equal 1, Privilege.select("select/correct/get", :get).length
-    [:post, :put, :delete].each do |action|
-      assert_equal 1, Privilege.select("select/correct/post", action).length
-      assert_equal 1, Privilege.select("select/correct/put", action).length
-      assert_equal 1, Privilege.select("select/correct/delete", action).length
+
+    post_action_types.each do |configured_action|
+      post_action_types.each do |actual_action|
+        assert_equal 1, Privilege.select("select/correct/#{configured_action}", actual_action).length
+      end
     end
   end
 
