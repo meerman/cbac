@@ -81,12 +81,12 @@ module Cbac
     end
 
     def delete_generic_known_permissions
-      known_permissions = Cbac::KnownPermission.find(:all, :conditions => {:permission_type => Cbac::KnownPermission.PERMISSION_TYPES[:generic]})
+      known_permissions = Cbac::KnownPermission.where(permission_type: Cbac::KnownPermission.PERMISSION_TYPES[:generic])
       known_permissions.each { |p| p.destroy }
     end
 
     def delete_generic_permissions
-      permissions = Cbac::Permission.find(:all, :conditions => {:context_role => nil})
+      permissions = Cbac::Permission.find(context_role: nil)
       # for backwards compatibility, generic_role name was administrators instead of administrator
       # SMELL: administrator role *only* identified by name
       (permissions.select { |perm| perm.generic_role.name != "administrator" and perm.generic_role.name != "administrators" }).each { |p| p.destroy }

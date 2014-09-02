@@ -6,7 +6,7 @@
     <%= hidden_field_tag "generic_role_id" + update_name, generic_role.id.to_s, :name => "generic_role_id" %>
     <%= hidden_field_tag "user_id" + update_name, user_id.to_s, :name => "user_id" %>
     <%= check_box_tag "member" + update_name, "1",
-      (Cbac::Membership.find(:all, :conditions => ["generic_role_id = ? AND user_id = ?", generic_role.id.to_s, user_id.to_s]).length > 0),
+      (Cbac::Membership.where(generic_role_id: generic_role.id, user_id: user_id).count > 0),
       {:onclick => "this.form.onsubmit();", :name => "member"}%>
   <% end %>
 <% unless update_partial %></div><% end %>

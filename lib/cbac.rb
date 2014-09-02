@@ -58,7 +58,9 @@ module Cbac
         }
 
         # Check the context roles Get the permissions
-        privilege_sets.collect{|privilege_set|Cbac::Permission.find(:all, :conditions => ["privilege_set_id = ? AND generic_role_id = 0", privilege_set.id.to_s])}.flatten.each do |permission|
+        privilege_sets.collect do |privilege_set|
+          Cbac::Permission.where(privilege_set_id: privilege_set.id, generic_role_id: 0)
+        end.flatten.each do |permission|
           puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilege_set.name}" if Cbac::Config.verbose
           eval_string = ContextRole.roles[permission.context_role.to_sym]
           begin

@@ -39,7 +39,7 @@ module Cbac
         yml << pristine_role.name if pristine_role.role_type == PristineRole.ROLE_TYPES[:context]
         yml << "\n"
         yml << "  generic_role_id: " << pristine_role.role_id.to_s << "\n"
-        yml << "  privilege_set_id: <%= Cbac::PrivilegeSetRecord.find(:first, :conditions => {:name => '" << privilege_set_name << "'}).id %>\n"
+        yml << "  privilege_set_id: <%= Cbac::PrivilegeSetRecord.where(name: '#{privilege_set_name}').first.id %>\n"
         yml << "  created_at: " << Time.now.strftime("%Y-%m-%d %H:%M:%S") << "\n"
         yml << "  updated_at: " << Time.now.strftime("%Y-%m-%d %H:%M:%S") << "\n"
         yml << "\n"
