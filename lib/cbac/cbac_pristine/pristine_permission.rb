@@ -133,12 +133,12 @@ module Cbac
         raise ArgumentError, "Error: trying to revoke permission #{privilege_set_name} for #{pristine_role.name}, but this permission does not exist" unless cbac_permission_exists?
 
         if pristine_role.role_type == PristineRole.ROLE_TYPES[:context]
-          permission = Cbac::Permission.first(:joins => [:privilege_set], :conditions => {:cbac_privilege_set => {:name => privilege_set_name}, :context_role => pristine_role.name})
+          permission = Cbac::Permission.joins(:privilege_set).where("cbac_privilege_set.name = ?", privilege_set_name).where(context_role: pristine_role.name).first
         else
-          permission = Cbac::Permission.first(:joins => [:generic_role, :privilege_set], :conditions => {:cbac_privilege_set => {:name => privilege_set_name}, :cbac_generic_roles => {:name => pristine_role.name}})
+          permission = Cbac::Permission.joins(:generic_role, :privilege_set).where("cbac_privilege_set.name = ?", privilege_set_name).where("cbac_generic_roles.name = ?", pristine_role.name).first
         end
 
-        register_change if permission.destroy
+        register_change if Cbac::Permission.find(permission.id).destroy
       end
 
       # register this permission as a known permission
