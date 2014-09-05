@@ -33,7 +33,7 @@ module Cbac
       end
 
       def self.admin_role(use_db = true)
-        admin_role =  use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:admin]}) : nil
+        admin_role =  use_db ? PristineRole.where(role_type: PristineRole.ROLE_TYPES[:admin]).first : nil
 
         admin_role || PristineRole.new do |role|
           role.role_id = 1

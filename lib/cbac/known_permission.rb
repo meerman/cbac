@@ -6,10 +6,10 @@ class Cbac::KnownPermission < ActiveRecord::Base
   @@PERMISSION_TYPES = {:context => 0, :generic => 1}
 
   def self.find_context_permissions(conditions = {})
-    all(:conditions => conditions.merge(:permission_type => @@PERMISSION_TYPES[:context]))
+    where(conditions.merge(:permission_type => @@PERMISSION_TYPES[:context])).all
   end
 
   def self.find_generic_permissions(conditions = {})
-    all(:conditions => conditions.merge(:permission_type => @@PERMISSION_TYPES[:generic]))
+    where(conditions.merge(:permission_type => @@PERMISSION_TYPES[:generic])).all
   end
 end

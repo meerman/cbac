@@ -133,7 +133,7 @@ module Cbac
           # if not, the context role is not found by CBAC and thus will not work
 
           # this may be a context role that's already in the database
-          context_role = use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:context], :name => context_role_name.captures[0]}) : nil
+          context_role = use_db ? PristineRole.where(role_type: PristineRole.ROLE_TYPES[:context], name: context_role_name.captures[0]).first : nil
 
           # this may still be a context role we've seen before...
           context_role = @context_roles.select do |cr| cr.role_type == PristineRole.ROLE_TYPES[:context] and cr.name == context_role_name.captures[0] end.first if context_role.nil?
@@ -166,7 +166,7 @@ module Cbac
               return generic_cbac_role
             end
           end
-          role = use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]}) : nil
+          role = use_db ? PristineRole.where(role_type: PristineRole.ROLE_TYPES[:generic], name: generic_role.captures[0]).first : nil
 
           if role.nil?
             role = PristineRole.new do |role|
