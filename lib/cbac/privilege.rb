@@ -88,7 +88,8 @@ class Privilege
     def select(controller_method, action_type)
       action_type = action_type.to_s
       post_methods = ["post", "put", "delete", "patch"]
-      if action_type == "get"
+      get_methods = ["get", "head"]
+      if get_methods.include? action_type
         privilege_sets = Privilege.get_resources[controller_method]
       else if post_methods.include?(action_type)
           privilege_sets = Privilege.post_resources[controller_method]
