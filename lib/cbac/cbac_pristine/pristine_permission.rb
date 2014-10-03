@@ -56,17 +56,30 @@ module Cbac
 
       # checks if a pristine permission with the same properties(except line_number) exists in the database
       def exists?
-        Cbac::CbacPristine::PristinePermission.count(:conditions => {:privilege_set_name => privilege_set_name, :pristine_role_id => pristine_role_id, :operation => operation}) > 0
+        Cbac::CbacPristine::PristinePermission.where(
+          privilege_set_name: privilege_set_name,
+          pristine_role_id: pristine_role_id,
+          operation: operation)
+        .count > 0
       end
 
       # checks if a pristine permission with the exact same properties(except line_number), but the reverse operation exists in the database
       def reverse_exists?
-        Cbac::CbacPristine::PristinePermission.count(:conditions => {:privilege_set_name => privilege_set_name, :pristine_role_id => pristine_role_id, :operation => reverse_operation}) > 0
+        Cbac::CbacPristine::PristinePermission.where(
+          privilege_set_name: privilege_set_name,
+          pristine_role_id: pristine_role_id,
+          operation: reverse_operation)
+        .count > 0
       end
 
       # delete the pristine permission with the reverse operation of this one
       def delete_reverse_permission
-        reverse_permission = Cbac::CbacPristine::PristinePermission.first(:conditions => {:privilege_set_name => privilege_set_name, :pristine_role_id => pristine_role_id, :operation => reverse_operation})
+        reverse_permission = Cbac::CbacPristine::PristinePermission.where(
+          privilege_set_name: privilege_set_name,
+          pristine_role_id: pristine_role_id,
+          operation: reverse_operation)
+        .first
+
         reverse_permission.delete
       end
 
@@ -86,7 +99,10 @@ module Cbac
 
       # checks if the known_permissions table has an entry for this permission
       def known_permission_exists?
-        Cbac::KnownPermission.count(:conditions => {:permission_type => pristine_role.known_permission_type, :permission_number => line_number}) > 0
+        Cbac::KnownPermission.where(
+          :permission_type   => pristine_role.known_permission_type,
+          :permission_number => line_number
+        ).count > 0
       end
 
       # accept this permission and apply to the current cbac permission set

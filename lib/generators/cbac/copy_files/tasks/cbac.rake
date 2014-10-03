@@ -16,7 +16,7 @@
 
 # Get a privilege set that fulfills the provided conditions
   def get_privilege_set(conditions)
-    Cbac::PrivilegeSetRecord.first(:conditions => conditions)
+    Cbac::PrivilegeSetRecord.where(conditions).first
   end
 
 # Get a Hash containing all entries from the provided table
