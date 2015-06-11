@@ -47,14 +47,18 @@ module Cbac
         check_privilege_sets([PrivilegeSet.sets[privilege_set.to_sym]], context)
       end
 
+      def permitted_for_generic_role?(privilege_set, context)
+        Cbac::GenericRole.joins(:generic_role_members, :permissions).exists?(
+          'cbac_memberships.user_id'  => current_user(context),
+          'cbac_permissions.privilege_set_id' => privilege_set.id
+        )
+      end
+
       # Check the given privilege_sets
       def check_privilege_sets(privilege_sets, context = {})
         # Check the generic roles
         return true if privilege_sets.any? { |set|
-          Cbac::GenericRole.joins(:generic_role_members, :permissions).exists?(
-            'cbac_memberships.user_id'  => current_user,
-            'cbac_permissions.privilege_set_id' => set.id
-          )
+          permitted_for_generic_role?(set, context)
         }
 
         # Check the context roles Get the permissions
@@ -89,8 +93,12 @@ module Cbac
       end
 
       # Default implementation of the current_user method
-      def current_user_id
-        session[:currentuser].to_i
+      def current_user_id(context = {})
+        context[:cbac_user].to_i
+      end
+
+      def current_user(context = {})
+        current_user_id(context)
       end
 
       # Load controller classes and methods
