@@ -57,7 +57,7 @@ describe "CbacPristinePermission" do
     it "should return a yml string containing ruby code to find the privilege set by name" do
       pristine_permission = PristinePermission.new(:line_number => 150, :privilege_set_name => "chat", :pristine_role => @context_role)
 
-      pristine_permission.to_yml_fixture.should match(/privilege_set_id: \<%= Cbac::PrivilegeSetRecord.find\(:first, :conditions => \{:name => '#{pristine_permission.privilege_set_name}'\}\)\.id %>/)
+      pristine_permission.to_yml_fixture.should match(/privilege_set_id: \<%= Cbac::PrivilegeSetRecord.where\(name: '#{pristine_permission.privilege_set_name}'\)\.first\.id %>/)
     end
 
     it "should return a yml string containing created_at and updated_at" do
