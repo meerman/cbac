@@ -19,7 +19,7 @@ class Cbac::PrivilegeSet
       # check for double creation
       raise ArgumentError, "CBAC: PrivilegeSet was already defined: #{symbol.to_s}" if @sets.include?(symbol)
       # Create record if privilege set doesn't exist
-      record = Cbac::PrivilegeSetRecord.find_or_create_by_name(symbol.to_s)
+      record = Cbac::PrivilegeSetRecord.find_or_create_by(name: symbol.to_s)
       record.set_comment(comment)
       record.save
 
