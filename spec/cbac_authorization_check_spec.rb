@@ -44,23 +44,23 @@ describe Cbac do
 
       context "and the contextual requirements are fulfilled" do
         before :each do
-          ideal_son_in_law = mock('user', :brought_flowers? => true)
-          @controller.stub(:candidate).and_return(ideal_son_in_law)
+          ideal_son_in_law = double('user', :brought_flowers? => true)
+          allow(@controller).to receive(:candidate).and_return(ideal_son_in_law)
         end
 
         specify "the action is invoked" do
-          @controller.authorize.should == true
+          expect(@controller.authorize).to be_truthy
         end
       end
 
       context "and the contextual requirements are not fulfilled" do
         before :each do
-          some_punk = mock('user', :brought_flowers? => false)
-          @controller.stub(:candidate).and_return(some_punk)
+          some_punk = double('user', :brought_flowers? => false)
+          allow(@controller).to receive(:candidate).and_return(some_punk)
         end
 
         specify "the action is blocked" do
-          @controller.should_receive(:unauthorized)
+          expect(@controller).to receive(:unauthorized)
 
           @controller.authorize
         end
