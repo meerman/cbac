@@ -13,9 +13,9 @@ Gem::Specification.new do |s|
   s.license                   = "MIT"
   s.rdoc_options              = ["--line-numbers", "--inline-source", "--title", "Cbac", "--main", "README.rdoc"]
   s.require_paths             = ["lib"]
-  s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to?: required_rubygems_version =
+  s.required_ruby_version     = ">= 1.9.3"
+  s.required_rubygems_version = ">= 1.8.11"
   s.rubyforge_project         = "cbac"
-  s.rubygems_version          = "1.8.24"
   s.summary                   = "CBAC - Simple authorization system for Rails applications."
   s.test_files                = `git ls-files -- test/*.*`.split("\n")
 
