@@ -1,4 +1,4 @@
 nbproject
 pkg
 spec/support/*.sqlite3
-
+Gemfile.lock
