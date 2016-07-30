@@ -5,7 +5,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
         t.integer :generic_role_id, :default => 0
         t.string :context_role
         t.integer :privilege_set_id
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
@@ -13,7 +13,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
       create_table :cbac_generic_roles do |t|
         t.string :name
         t.text :remarks
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
@@ -21,7 +21,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
       create_table :cbac_memberships do |t|
         t.integer :user_id
         t.integer :generic_role_id
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
@@ -29,7 +29,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
       create_table :cbac_privilege_set do |t|
         t.string :name
         t.string :comment
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
@@ -37,7 +37,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
       create_table :cbac_pristine_files do |t|
         t.string :type
         t.string :file_name
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
@@ -49,7 +49,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
         t.integer :line_number
         t.string :comment
         t.text :operation, :limit => 2
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
@@ -58,7 +58,7 @@ class CreateCbacFromScratch < ActiveRecord::Migration
         t.string :role_type
         t.string :name
         t.integer :role_id
-        t.timestamps
+        t.timestamps null: false
       end
     end
 
