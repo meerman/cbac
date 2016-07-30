@@ -25,8 +25,8 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency("rails", "~> 4.2")
       s.add_development_dependency("rspec-rails", "~> 3")
-      s.add_development_dependency("sqlite3")
-      s.add_development_dependency("database_cleaner")
+      s.add_development_dependency("sqlite3", "~> 1.3")
+      s.add_development_dependency("database_cleaner", "~> 1.5")
     else
     end
   else
