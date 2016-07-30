@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = "1.8.24"
   s.summary = "CBAC - Simple authorization system for Rails applications."
   s.test_files = ["test/test_cbac_privilege.rb", "test/test_cbac_context_role.rb", "test/test_helper.rb", "test/test_cbac_actions.rb", "test/test_cbac_privilege_set.rb", "test/test_cbac_authorize_generic_roles.rb"]
+  s.license = "MIT"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
