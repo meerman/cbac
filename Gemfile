@@ -1,5 +1,3 @@
-gemspec
+source 'https://rubygems.org'
 
-group :release do
-  gem 'echoe'
-end
+gemspec

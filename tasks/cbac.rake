@@ -16,7 +16,7 @@
 
 # Get a privilege set that fulfills the provided conditions
   def get_privilege_set(conditions)
-    Cbac::PrivilegeSetRecord.first(:conditions => conditions)
+    Cbac::PrivilegeSetRecord.where(conditions).first
   end
 
 # Get a Hash containing all entries from the provided table
@@ -39,7 +39,7 @@
   def dump_permissions_to_yaml_file(permissions)
     permissions.each do |cp|
       privilege_set_name = get_privilege_set(:id => cp['privilege_set_id']).name
-      cp['privilege_set_id'] = "<%= Cbac::PrivilegeSetRecord.find(:first, :conditions => {:name => '#{privilege_set_name}'}).id %>"
+      cp['privilege_set_id'] = "<%= Cbac::PrivilegeSetRecord.where(name: '#{privilege_set_name}').first.id %>"
     end
     dump_objects_to_yaml_file(permissions, "permissions")
   end

@@ -5,15 +5,18 @@ class Cbac::MembershipsController < ApplicationController
   # GET /index
   # GET /index.xml
   def index
-    @generic_roles = Cbac::GenericRole.find(:all)
-    @users = User.find(:all)
+    @generic_roles = Cbac::GenericRole.all
+    @users = User.all
   end
 
   # POST /update
   def update
-    Cbac::Membership.find(:all, :conditions => ["generic_role_id = ? AND user_id = ?", params[:generic_role_id], params[:user_id]]).each{|p|p.delete}
+    Cbac::Membership.where(generic_role_id: params[:generic_role_id], user_id: params[:user_id]).each(&:delete)
     if params[:member].to_s == "1"
-      Cbac::Membership.create(:generic_role_id => params[:generic_role_id], :user_id => params[:user_id])
+      Cbac::Membership.create do |membership|
+        membership.generic_role_id = params[:generic_role_id]
+        membership.user_id = params[:user_id]
+      end
     end
     role = Cbac::GenericRole.find(params[:generic_role_id])
     render :partial => "cbac/memberships/update.html", :locals => {:generic_role => role,

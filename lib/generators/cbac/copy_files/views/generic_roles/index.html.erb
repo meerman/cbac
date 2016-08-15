@@ -7,7 +7,7 @@
       <th class="small">&nbsp;</th>
     </tr>
 
-    <% Cbac::GenericRole.find(:all).each do |role| %>
+    <% Cbac::GenericRole.all.each do |role| %>
       <tr class="row">
         <% form_for role do |r| %>
           <td class="medium"><%= r.text_field :name %></td>
@@ -48,7 +48,7 @@
       </tr>
       <tr>
         <td class="medium">Select role</td>
-        <td class="medium"><%= select_tag "id", Cbac::GenericRole.find(:all).collect{|role|"<option value='#{role.id}'>#{role.name}</option>"} %>
+        <td class="medium"><%= select_tag "id", Cbac::GenericRole.all.collect{|role|"<option value='#{role.id}'>#{role.name}</option>"} %>
         </td>
       </tr>
       <tr>

@@ -1,3 +1,5 @@
+require "active_record"
+
 # TODO: Check the permission table for double entries, ie: both an entry in the
 # generic_role_id field and an entry in the context_role field. Solution: solve
 # via model. Update model & add test
@@ -27,13 +29,6 @@ module Cbac
   def cbac_boot!
     if Cbac::Setup.check
       puts "CBAC properly installed"
-   
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/privilege'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/privilege_set'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/context_role'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine_file'))
-      require File.expand_path(File.join(File.dirname(__FILE__), '/cbac/cbac_pristine/pristine_permission'))
 
       # check performs a check to see if the user is allowed to access the given
       # resource. Example: authorization_check("BlogController", "index", :get)
@@ -52,19 +47,33 @@ module Cbac
         check_privilege_sets([PrivilegeSet.sets[privilege_set.to_sym]], context)
       end
 
+      def permitted_for_generic_role?(privilege_set, context)
+        Cbac::GenericRole.joins(:generic_role_members, :permissions).exists?(
+          'cbac_memberships.user_id'  => current_user(context),
+          'cbac_permissions.privilege_set_id' => privilege_set.id
+        )
+      end
+
       # Check the given privilege_sets
       def check_privilege_sets(privilege_sets, context = {})
         # Check the generic roles
-        return true if privilege_sets.any? { |set| Cbac::GenericRole.find(:all, :conditions => ["user_id= ? AND privilege_set_id = ?", current_user, set.id],:joins => [:generic_role_members, :permissions]).length > 0 }
+        return true if privilege_sets.any? { |set|
+          permitted_for_generic_role?(set, context)
+        }
+
         # Check the context roles Get the permissions
-        privilege_sets.collect{|privilege_set|Cbac::Permission.find(:all, :conditions => ["privilege_set_id = ? AND generic_role_id = 0", privilege_set.id.to_s])}.flatten.each do |permission|
+        privilege_sets.collect do |privilege_set|
+          Cbac::Permission.where(privilege_set_id: privilege_set.id, generic_role_id: 0)
+        end.flatten.each do |permission|
           puts "Checking for context_role:#{permission.context_role} on privilege_set:#{permission.privilege_set.name}" if Cbac::Config.verbose
           eval_string = ContextRole.roles[permission.context_role.to_sym]
           begin
             return true if eval_string.call(context)
           rescue Exception => e
             puts "Error in context role: #{permission.context_role} on privilege_set: #{permission.privilege_set.name}. Context: #{context}"
-            raise e if RAILS_ENV == "development" or RAILS_ENV == "test" # In development mode, this should crash as hard as possible, but in further stages, it should not
+            if %w{development test}.include? Rails.env
+              raise e # In development mode, this should crash as hard as possible, but in further stages, it should not
+            end
           end
         end
         # not authorized
@@ -84,8 +93,12 @@ module Cbac
       end
 
       # Default implementation of the current_user method
-      def current_user_id
-        session[:currentuser].to_i
+      def current_user_id(context = {})
+        context[:cbac_user].to_i
+      end
+
+      def current_user(context = {})
+        current_user_id(context)
       end
 
       # Load controller classes and methods

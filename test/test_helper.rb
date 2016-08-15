@@ -14,7 +14,7 @@ ActiveRecord::Base.establish_connection(
 )
 fixture_files = Dir.glob(File.join(File.dirname(__FILE__), "fixtures", "*.yml"))
 fixture_files.each do |filename|
-  Fixtures.create_fixtures('test/fixtures', File.basename(filename, ".*"))
+  ActiveRecord::FixtureSet.create_fixtures('test/fixtures', File.basename(filename, ".*"))
 end
 RAILS_ROOT ||=  "."
 

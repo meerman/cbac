@@ -1,12 +1,37 @@
 ENV["RAILS_ENV"] ||= 'test'
 
-require 'spec/autorun'
-require 'spec/rails'
+require 'bundler'
+Bundler.require
+require 'rails/all'
+require 'rspec/rails'
 
-Spec::Runner.configure do |config|
-   # If you're not using ActiveRecord you should remove these
-  # lines, delete config/database.yml and disable :active_record
-  # in your config/boot.rb
-  config.use_transactional_fixtures = true
-  config.use_instantiated_fixtures  = false
+require 'cbac'
+
+require 'support/schema'
+require 'database_cleaner'
+
+DatabaseCleaner.strategy = :transaction
+
+RSpec.configure do |config|
+  config.before(:suite) do
+    Cbac::Schema.load
+
+    Cbac::Config.verbose = false
+
+    o = Object.new
+    o.send :extend, Cbac
+    o.cbac_boot!
+  end
+
+  config.after(:suite) do
+    Cbac::Schema.drop
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 end

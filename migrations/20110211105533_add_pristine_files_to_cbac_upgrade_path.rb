@@ -3,7 +3,7 @@ class AddPristineFilesToCbacUpgradePath < ActiveRecord::Migration
     create_table :cbac_pristine_files do |t|
       t.string :type
       t.string :file_name
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_column :cbac_staged_permissions, :pristine_file_id, :integer

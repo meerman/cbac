@@ -131,16 +131,20 @@ module Cbac
         if context_role_name = line.match(/^.*ContextRole\(\s*([A-Za-z0-9_]+)\s*\)/)
           # NOTE: the 0 for an ID is very important! In CBAC a context role permission MUST have 0 as generic_role_id
           # if not, the context role is not found by CBAC and thus will not work
-          
+
           # this may be a context role that's already in the database
-          context_role = use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:context], :name => context_role_name.captures[0]}) : nil
-          
+          context_role = use_db ? PristineRole.where(role_type: PristineRole.ROLE_TYPES[:context], name: context_role_name.captures[0]).first : nil
+
           # this may still be a context role we've seen before...
           context_role = @context_roles.select do |cr| cr.role_type == PristineRole.ROLE_TYPES[:context] and cr.name == context_role_name.captures[0] end.first if context_role.nil?
-          
-          if context_role.nil? 
+
+          if context_role.nil?
             # this is a never-before-seen context role
-            context_role = PristineRole.new(:role_id => 0, :role_type => PristineRole.ROLE_TYPES[:context], :name => context_role_name.captures[0]) if context_role.nil?
+            context_role = PristineRole.new do |role|
+              role.role_id = 0
+              role.role_type = PristineRole.ROLE_TYPES[:context]
+              role.name = context_role_name.captures[0]
+            end
             context_role.save if use_db
             @context_roles.push context_role
           end
@@ -162,10 +166,14 @@ module Cbac
               return generic_cbac_role
             end
           end
-          role = use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0]}) : nil
+          role = use_db ? PristineRole.where(role_type: PristineRole.ROLE_TYPES[:generic], name: generic_role.captures[0]).first : nil
 
           if role.nil?
-            role =  PristineRole.new(:role_id => @generic_roles.length + 2, :role_type => PristineRole.ROLE_TYPES[:generic], :name => generic_role.captures[0])
+            role = PristineRole.new do |role|
+              role.role_id = @generic_roles.length + 2
+              role.role_type = PristineRole.ROLE_TYPES[:generic]
+              role.name = generic_role.captures[0]
+            end
             role.save if use_db
           end
 

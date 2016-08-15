@@ -9,7 +9,6 @@ module Cbac
         {:context => "context", :generic => "generic", :admin => "administrator"}
       end
 
-     
       #convert this cbac role to a yml statement which can be used to create a yml fixtures file
       #executing this statement will result in one cbac_generic_role in the DB
       def to_yml_fixture(fixture_id = nil)
@@ -34,9 +33,13 @@ module Cbac
       end
 
       def self.admin_role(use_db = true)
-        admin_role =  use_db ? PristineRole.first(:conditions => {:role_type => PristineRole.ROLE_TYPES[:admin]}) : nil
+        admin_role =  use_db ? PristineRole.where(role_type: PristineRole.ROLE_TYPES[:admin]).first : nil
 
-        admin_role.nil?  ? PristineRole.new(:role_id => 1, :role_type => PristineRole.ROLE_TYPES[:admin], :name => "administrator") : admin_role
+        admin_role || PristineRole.new do |role|
+          role.role_id = 1
+          role.role_type = PristineRole.ROLE_TYPES[:admin]
+          role.name = "administrator"
+        end
       end
     end
   end

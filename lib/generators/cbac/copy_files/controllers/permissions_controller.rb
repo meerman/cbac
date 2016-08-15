@@ -10,11 +10,11 @@ class Cbac::PermissionsController < ApplicationController
 
       params[:role_substr].split('|').each do |role_start|
           @context_roles += (ContextRole.roles.select {|key,value| !key.to_s.match(/^#{role_start}/).nil?}).collect{|key, value| [key, value]}
-        @generic_roles += Cbac::GenericRole.find(:all).select {|role| !role.name.match(/^#{role_start}/).nil? }
+        @generic_roles += Cbac::GenericRole.all.select {|role| !role.name.match(/^#{role_start}/).nil? }
       end
     else
       @context_roles = ContextRole.roles
-      @generic_roles = Cbac::GenericRole.all    
+      @generic_roles = Cbac::GenericRole.all
     end
 
     if params[:priv_substr] && params[:priv_substr] != ""
@@ -22,7 +22,7 @@ class Cbac::PermissionsController < ApplicationController
       params[:priv_substr].split('|').each do |priv_start|
         @sets += PrivilegeSet.sets.select {|key, value| !key.to_s.match(/^#{priv_start}/).nil?}
       end
-    else 
+    else
       @sets = PrivilegeSet.sets
     end
   end
@@ -41,7 +41,7 @@ class Cbac::PermissionsController < ApplicationController
 
   # POST /update
   def update_context_role
-    Cbac::Permission.find(:all, :conditions => ["context_role = ? AND privilege_set_id = ?", params[:context_role], params[:privilege_set_id]]).each{|p|p.delete}
+    Cbac::Permission.where(context_role: params[:context_role], privilege_set_id: params[:privilege_set_id]).each(&:delete)
     if params[:permission].to_s == "1"
       Cbac::Permission.create(:context_role => params[:context_role], :privilege_set_id => params[:privilege_set_id])
     end
@@ -50,9 +50,12 @@ class Cbac::PermissionsController < ApplicationController
   end
 
   def update_generic_role
-    Cbac::Permission.find(:all, :conditions => ["generic_role_id = ? AND privilege_set_id = ?", params[:generic_role_id], params[:privilege_set_id]]).each{|p|p.delete}
+    Cbac::Permission.where(generic_role_id: = params[:generic_role_id], privilege_set_id: = params[:privilege_set_id]).each(&:delete)
     if params[:permission].to_s == "1"
-      Cbac::Permission.create(:generic_role_id => params[:generic_role_id], :privilege_set_id => params[:privilege_set_id])
+      Cbac::Permission.create do |permission|
+        permission.generic_role_id = params[:generic_role_id]
+        permission.privilege_set_id = params[:privilege_set_id]
+      end
     end
     role = Cbac::GenericRole.find(params[:generic_role_id])
     render :partial => "cbac/permissions/update_generic_role.html", :locals => {:role =>role,
