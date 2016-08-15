@@ -40,6 +40,7 @@ describe Cbac do
           :controller => "dating/daughter_controller",
           :action => "take_to_dinner"
         }
+        allow(@controller).to receive(:current_user).and_return(nil)
       end
 
       context "and the contextual requirements are fulfilled" do
@@ -60,9 +61,7 @@ describe Cbac do
         end
 
         specify "the action is blocked" do
-          expect(@controller).to receive(:unauthorized)
-
-          @controller.authorize
+          expect(@controller.authorize).to be_falsey
         end
       end
     end

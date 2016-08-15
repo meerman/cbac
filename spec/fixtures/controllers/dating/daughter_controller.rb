@@ -5,7 +5,8 @@ module Dating
     def take_to_dinner; end
     def bring_home; end
 
-  private
-    attr_accessor :current_user
+    def authorize
+      authorization_check(params[:controller], params[:action], request.request_method.downcase, self)
+    end
   end
 end
