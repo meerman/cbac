@@ -2,10 +2,10 @@
 
 Gem::Specification.new do |s|
   s.name    = "cbac"
-  s.version = "0.6.10"
+  s.version = "0.7.0"
 
   s.authors                   = ["Bert Meerman"]
-  s.date                      = "2013-01-09"
+  s.date                      = "2016-08-15"
   s.description               = "Simple authorization system for Rails applications. Allows you to develop applications with a mixed role based authorization and a context based authorization model. Does not supply authentication."
   s.email                     = "bertm@rubyforge.org"
   s.files                     = `git ls-files`.split("\n")
