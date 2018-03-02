@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.license                   = "MIT"
   s.rdoc_options              = ["--line-numbers", "--inline-source", "--title", "Cbac", "--main", "README.rdoc"]
   s.require_paths             = ["lib"]
-  s.required_ruby_version     = ">= 1.9.3"
+  s.required_ruby_version     = ">= 2.2.2"
   s.required_rubygems_version = ">= 1.8.11"
   s.rubyforge_project         = "cbac"
   s.summary                   = "CBAC - Simple authorization system for Rails applications."
@@ -23,5 +23,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rspec-rails", "~> 3")
   s.add_development_dependency("sqlite3", "~> 1.3")
   s.add_runtime_dependency("echoe", "~> 4")
-  s.add_runtime_dependency("rails", "~> 4.2")
+  s.add_runtime_dependency("rails", "~> 5.0")
 end
