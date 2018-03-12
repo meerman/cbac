@@ -1,4 +1,4 @@
-class CreateCbacFromScratch < ActiveRecord::Migration
+class CreateCbacFromScratch < ActiveRecord::Migration[5.0]
   def self.up
     unless Cbac::Permission.table_exists?
       create_table :cbac_permissions do |t|

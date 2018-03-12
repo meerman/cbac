@@ -1,34 +1,23 @@
-= Context Based Access Control
+= Context Based Access Control (cbac)
 
-== DESCRIPTION:
-Easy to use, light-weight authorization system for Rails applications.
+== Description
+<em>Easy to use, light-weight authorization system for Rails applications.</em>
 
-== Update
-Version 0.7 contains several updates on the system. This is driven by the
-wish to be compliant with Rails 4.2, the oldest Rails version that is
-currently under support.
+Context Based Access Control allows you to build a Rails application with both generic roles as well as context roles. The generic role part allows an application to authorize users with a conventional role system. The context part allows an application to authorize with a combination of the user credentials and the context of the requested action.
 
-== FEATURES:
-- Authorize users via roles/ groups
-- Authorize users via the context of their request
+== Install
+The gem can be installed using the 'gem' command: <code>gem install cbac</code>
 
-== SYNOPSIS:
-Context Based Access Control allows you to build a Rails application with
-both generic roles as well as context roles. The generic role part allows
-an application to authorize users with a conventional role system. The context
-part allows an application to authorize with a combination of the user
-credentials and the context of the requested action.
+Please use the correct version of _cbac_ in your *Gemfile*:
+* for Rails 3 and lower: <code>gem 'cbac', '~> 0.6.10'</code>
+* for Rails 4: <code>gem 'cbac', '~> 0.7.0'</code>
+* for Rails 5: <code>gem 'cbac', '~> 0.8.0'</code>
 
-== REQUIREMENTS:
+== Usage
+To use the gem, see the documentation at http://cbac.rubyforge.org.
 
-== INSTALL:
-The gem can be installed using the 'gem' command.
-gem install cbac
-
-To use the gem, see the documentation at cbac.rubyforge.org.
-== LICENSE:
-
-(The MIT License)
+== License
+This project is licensed under the MIT License:
 
 Copyright (c) 2009 Bert Meerman
 
